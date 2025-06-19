@@ -1,16 +1,73 @@
 ---
-
+import Layout from '../layouts/Layout.astro';
+import AnimatedAsciiHeader from '../components/AnimatedASCIIHeader.tsx';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Your Animated Site">
+  <main>
+    <header class="hero">
+      <AnimatedAsciiHeader 
+        client:load
+        text="DEMOS ANON"
+        font="Standard"
+        background="#0000ff"
+        textColor="#fffbeb"
+        particleColors={['#E1308D', '#0FD3D3', '#F0C642', '#472394']}
+      />
+    </header>
+    
+    <section class="content">
+      <h2>Your Content Here</h2>
+      <p>Add your website content below the animated header.</p>
+    </section>
+  </main>
+</Layout>
+
+<style>
+  .hero {
+    position: relative;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    background: #0000ff;
+  }
+  
+  .hero canvas {
+    width: 100% !important;
+    height: 100% !important;
+    display: block !important;
+  }
+  
+  .hero-content {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+  }
+  
+  .hero-content h1 {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+    font-weight: bold;
+  }
+  
+  .hero-content p {
+    font-size: 1.25rem;
+    opacity: 0.9;
+  }
+  
+  .content {
+    padding: 4rem 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .content h2 {
+    color: #784fcf;
+    margin-bottom: 1rem;
+  }
+</style>
