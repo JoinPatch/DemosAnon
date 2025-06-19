@@ -1,73 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import AnimatedAsciiHeader from '../components/AnimatedASCIIHeader.tsx';
+import AsciiHeader from '../components/AsciiHeader.tsx';
 ---
 
-<Layout title="Your Animated Site">
-  <main>
-    <header class="hero">
-      <AnimatedAsciiHeader 
-        client:load
-        text="DEMOS ANON"
-        font="Standard"
-        background="#0000ff"
-        textColor="#fffbeb"
-        particleColors={['#E1308D', '#0FD3D3', '#F0C642', '#472394']}
-      />
-    </header>
-    
-    <section class="content">
-      <h2>Your Content Here</h2>
-      <p>Add your website content below the animated header.</p>
-    </section>
-  </main>
+<Layout title="Animated ASCII Demo">
+  <header style="height: 100vh; position: relative;">
+    <!-- rendered on the client -->
+    <AsciiHeader
+      text="NERD CAMP"
+      font="ANSI Shadow"          /* any figlet font you like */
+      client:load
+    />
+    <div class="absolute inset-0 flex flex-col items-center justify-center z-10 text-center text-white">
+      <h1 style="font-size:3rem;margin:0">Welcome!</h1>
+      <p>Enjoy an ASCII header inspired by jules.google</p>
+    </div>
+  </header>
 </Layout>
-
-<style>
-  .hero {
-    position: relative;
-    height: 100vh;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    background: #0000ff;
-  }
-  
-  .hero canvas {
-    width: 100% !important;
-    height: 100% !important;
-    display: block !important;
-  }
-  
-  .hero-content {
-    position: relative;
-    z-index: 10;
-    text-align: center;
-    color: white;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-  }
-  
-  .hero-content h1 {
-    font-size: 3rem;
-    margin-bottom: 1rem;
-    font-weight: bold;
-  }
-  
-  .hero-content p {
-    font-size: 1.25rem;
-    opacity: 0.9;
-  }
-  
-  .content {
-    padding: 4rem 2rem;
-    max-width: 800px;
-    margin: 0 auto;
-  }
-  
-  .content h2 {
-    color: #784fcf;
-    margin-bottom: 1rem;
-  }
-</style>
