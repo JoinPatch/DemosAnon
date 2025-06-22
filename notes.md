@@ -8,3 +8,11 @@ Also have a look at some of 0x77's old artwork for inspiration here
 
 The bits that come out and move around, should move like they're on a grid/ in a pacman game! They should be different colours and also a handful of characters like "@" or such. Different to what
 compsoes the text 
+
+
+---
+
+22/6/25
+
+Note that the grid shows, however the characters are not centred within it. 
+Try to copy this as much as we can - he had it correct: https://github.com/owickstrom/the-monospace-web/blob/main/index.html

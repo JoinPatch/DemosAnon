@@ -10,27 +10,24 @@ export function initMonospaceGrid(debug = false) {
 
   // 2  —  helpers
   const cell = () => {
-    const probe = document.createElement('div');
-    probe.style.cssText = `
-      position: fixed; top: -9999px; left: -9999px;
-      width: 1ch; height: var(--line-height);
-    `;
-    document.body.appendChild(probe);
+    const probe = Object.assign(document.createElement('div'),{
+      style:"position:fixed;width:1ch;height:var(--line-height);inset:-9999px"
+    });
+    document.body.append(probe);
     const { width, height } = probe.getBoundingClientRect();
     probe.remove();
     return { width, height };
   };
 
   // 3  —  fit IMG / VIDEO heights so the bottom edge lands on the grid
-  const adjustMedia = () => {
+  const fitMedia = () => {
     const { height: h } = cell();
-    document.querySelectorAll('img, video').forEach((el) => {
+    document.querySelectorAll('img,video').forEach((el)=>{
       const w = el.naturalWidth  || el.videoWidth  || el.clientWidth;
       const k = el.naturalHeight || el.videoHeight || el.clientHeight || 1;
-      const ratio = w / k;
-      const realH = el.clientWidth / ratio;
-      const diff  = h - (realH % h);
-      el.style.paddingBottom = `${diff}px`;
+      const real = el.clientWidth / (w/k);
+      const slack = h - (real % h);
+      el.style.paddingBottom = `${slack}px`;
     });
   };
 
@@ -38,18 +35,17 @@ export function initMonospaceGrid(debug = false) {
   const flagOffGrid = () => {
     const { height: h, width: w } = cell();
     const skip = new Set(['THEAD','TBODY','TFOOT','TR','TD','TH']);
-    document.querySelectorAll('body :not(.debug-grid)').forEach((el) => {
-      if (skip.has(el.tagName)) return;
-      const { top, left } = el.getBoundingClientRect();
-      const dy = (top + window.scrollY)  % h;
-      const dx = (left + window.scrollX) % w;
-      el.classList.toggle('off-grid', dy !== 0 || dx !== 0);
+    document.querySelectorAll('body :not(.debug-grid)').forEach((el)=>{
+      if(skip.has(el.tagName)) return;
+      const { top,left } = el.getBoundingClientRect();
+      const dy = (top  + scrollY) % (h/2);   // ← see Oskar's trick
+      const dx = (left + scrollX) %  w;
+      el.classList.toggle('off-grid', dy!==0 || dx!==0);
     });
   };
 
   // 5  —  run on load / resize
-  adjustMedia();
-  flagOffGrid();
-  window.addEventListener('load',   () => { adjustMedia(); flagOffGrid(); });
-  window.addEventListener('resize', () => { adjustMedia(); flagOffGrid(); });
+  fitMedia(); flagOffGrid();
+  addEventListener('load',   ()=>{ fitMedia(); flagOffGrid(); });
+  addEventListener('resize', ()=>{ fitMedia(); flagOffGrid(); });
 } 

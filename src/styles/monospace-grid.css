@@ -1,0 +1,89 @@
+/* Font -------------------------------------------------------------------*/
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;800&display=swap');
+
+/* Grid constants ---------------------------------------------------------*/
+:root {
+  --font-family: 'JetBrains Mono', monospace;
+  --line-height: 1.2rem;        /* one row of the grid                    */
+  --cell-width : 1ch;           /* one column of the grid                  */
+  --border     : 2px;           /* shared "ink" thickness                  */
+  --fg         : #000;
+  --fg-alt     : #666;
+  --bg         : #fff;
+  --bg-alt     : #eee;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root { --fg:#fff; --fg-alt:#aaa; --bg:#000; --bg-alt:#111; }
+}
+
+/* Reset ------------------------------------------------------------------*/
+* { box-sizing:border-box; margin:0; padding:0; }
+
+html,body{
+  font-family:var(--font-family);
+  font-variant-numeric:tabular-nums lining-nums;
+  line-height:var(--line-height);
+  background:var(--bg); color:var(--fg);
+  /* width rounded down to the nearest full character cell  */
+  max-width:80ch;
+  width:calc(round(down,100%,var(--cell-width)));
+  margin-inline:auto;
+  padding:calc(var(--line-height)*2) 2ch;
+}
+
+/* Debug grid -------------------------------------------------------------*/
+body.debug .debug-grid{
+  --grid-color: color-mix(in srgb, var(--fg-alt) 30%, transparent);
+  position:absolute; inset:0;
+  pointer-events:none; z-index:9999;
+  background-image:
+    repeating-linear-gradient(var(--grid-color) 0 1px, transparent 1px var(--line-height)),
+    repeating-linear-gradient(90deg,var(--grid-color) 0 1px, transparent 1px var(--cell-width));
+  background-size:var(--cell-width) var(--line-height);
+}
+
+.off-grid{ background:rgba(255,0,0,.15); }
+
+/* ASCII Art --------------------------------------------------------------*/
+/* one big <pre> – keep it simple */
+.ascii-art{
+  position:relative;
+  top:calc(var(--line-height)/2);   /* baseline now sits dead-center */
+  display:block;
+  width:max-content;                /* shrink to art width           */
+  margin:0 auto;                    /* horizontal centre             */
+  font-size:16px;
+  line-height:var(--line-height);
+  white-space:pre;
+  font-variant-ligatures:none;
+  font-feature-settings:"liga" 0;
+  text-rendering:optimizeSpeed;
+  /* Break out of body width constraints */
+  max-width: none;
+  overflow: visible;
+}
+
+/* Generic typography -----------------------------------------------------*/
+h1,h2,h3,h4,h5,h6{ font-weight:800; margin:calc(var(--line-height)*2) 0 var(--line-height); }
+h1{ font-size:2rem; line-height:calc(var(--line-height)*2); text-transform:uppercase; }
+h2{ font-size:1rem; text-transform:uppercase; }
+
+a{ color:var(--fg); text-decoration-thickness:var(--border); }
+
+pre,code{ font-family:inherit; }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .ascii-art {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ascii-art {
+    font-size: 8px;
+  }
+}
+
+/* You can keep extending the file with tables, lists … later on ----------*/ 
