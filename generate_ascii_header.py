@@ -113,18 +113,18 @@ def create_demos_ascii_jules_style():
 		],
 		'O': [
 		" .dMMMMMMMb. ",
-		".0MM      MM0.",
-		"o0MM      MM0o",
-		"W0MM      MM0W",
-		"o0MM      MM0o",
+		".0MM     MM0;.",
+		"o0M       MM0o",
+		"W0Ml      .M0W",
+		"o0M;      ;M0o",
 		".0MM      MM0.",
 		" ';MMMMMMM:' "
 		],
 		'S': [
-		" dMMMMMMMM0. ",
+		"  dMMMMMMMM0. ",
 		"KMM         ",
 		"KMM         ",
-		" dMMMMMMMb  ",
+		" dMMMMMMMb.  ",
 		"         MM0",
 		"         MM0",
 		" .0MMMMMMMm' "
