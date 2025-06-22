@@ -16,11 +16,7 @@ const ASCIIHeader = () => {
   return (
     <div className="ascii-header">
       <pre className="ascii-art">
-        {demosLogoText.map((line, index) => (
-          <div key={index} className="ascii-line">
-            {line}
-          </div>
-        ))}
+        {demosLogoText.join('\n')}
       </pre>
     </div>
   );

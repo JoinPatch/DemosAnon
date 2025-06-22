@@ -47,7 +47,6 @@ const { title } = Astro.props;
       }
 
       .ascii-art {
-        font-family: monospace;
         font-size: 16px;
         line-height: var(--line-height);
         color: var(--text-color);
@@ -55,14 +54,11 @@ const { title } = Astro.props;
         white-space: pre;
         letter-spacing: 0;
         font-weight: normal;
-        text-align: left;
+        text-align: center;
         margin: 0;
-      }
-
-      .ascii-line {
-        margin: 0;
-        padding: 0;
-        height: var(--line-height);
+        font-variant-ligatures: none;
+        font-feature-settings: "liga" 0;
+        text-rendering: optimizeSpeed;
       }
 
       /* Debug Toggle - removed, now using hardcoded boolean */
@@ -129,13 +125,6 @@ const { title } = Astro.props;
         body {
           padding: 1rem;
         }
-      }
-
-      /* Grid-ready character positioning */
-      .ascii-art {
-        font-variant-ligatures: none;
-        font-feature-settings: "liga" 0;
-        text-rendering: optimizeSpeed;
       }
     </style>
   </head>
