@@ -10,31 +10,77 @@ const { title } = Astro.props;
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="description" content="Astro description" />
-    <meta name="viewport" content="width=device-width" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="generator" content={Astro.generator} />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
+    <style>
+      /* Reset and base styles */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'SF Mono', monospace;
+        background: white;
+        color: black;
+        line-height: 1;
+      }
+
+      /* ASCII Header Styles */
+      .ascii-header {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+      }
+
+      .ascii-art {
+        font-family: 'SF Mono', monospace;
+        font-size: 16px;
+        line-height: 1.2;
+        color: black;
+        background: white;
+        white-space: pre;
+        letter-spacing: 0;
+        font-weight: normal;
+        text-align: left;
+      }
+
+      .ascii-line {
+        margin: 0;
+        padding: 0;
+        height: 1.2em; /* Fixed line height for grid alignment */
+      }
+
+      /* Responsive adjustments */
+      @media (max-width: 768px) {
+        .ascii-art {
+          font-size: 12px;
+        }
+        
+        .ascii-header {
+          padding: 1rem;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .ascii-art {
+          font-size: 8px;
+        }
+      }
+
+      /* Grid-ready character positioning */
+      .ascii-art {
+        /* Each character will be positioned on a precise grid */
+        font-variant-ligatures: none;
+        font-feature-settings: "liga" 0;
+        text-rendering: optimizeSpeed;
+      }
+    </style>
   </head>
   <body>
     <slot />
   </body>
 </html>
-
-<style is:global>
-  html {
-    font-family: system-ui, sans-serif;
-  }
-  
-  body {
-    margin: 0;
-    padding: 0;
-    background: white;
-    color: white;
-  }
-  
-  * {
-  * {
-    box-sizing: border-box;
-  }
-</style>

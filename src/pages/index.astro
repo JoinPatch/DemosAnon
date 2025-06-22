@@ -1,18 +1,8 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import AsciiHeader from '../components/AsciiHeader.tsx';
+import ASCIIHeader from '../components/ASCIIHeader.jsx';
 ---
 
-<Layout title="Animated ASCII Demo">
-  <header style="height: 100vh; position: relative;">
-    <AsciiHeader
-      text="Demos Anon"
-      font="ANSI Shadow"         
-      client:load
-    />
-    <div class="absolute inset-0 flex flex-col items-center justify-center z-10 text-center text-white">
-      <h1 style="font-size:3rem;margin:0">Welcome!</h1>
-      <p>Enjoy an ASCII header inspired by jules.google</p>
-    </div>
-  </header>
+<Layout title="DEMOS - ASCII Art">
+  <ASCIIHeader client:load />
 </Layout>
