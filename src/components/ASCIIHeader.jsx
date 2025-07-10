@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // Configuration flag - set to false to hide the grid
-const SHOW_GRID = true;
+const SHOW_GRID = false;
 
 // ASCII art for "Demos" - will be used as fixed background
 const DEMOS_ASCII = [
