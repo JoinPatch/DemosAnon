@@ -1,5 +1,4 @@
 ---
-import "../styles/monospace-grid.css";
 export interface Props {
   title: string;
 }
@@ -18,7 +17,6 @@ const { title } = Astro.props;
     <slot />
     <div class="debug-grid"></div>
     <script type="module" is:inline>
-      // import { initMonospaceGrid } from '/src/utils/monospaceGrid.js';
       initMonospaceGrid(true);      // grid helpers only in dev
     </script>
   </body>
