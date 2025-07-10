@@ -28,11 +28,11 @@ const { title } = Astro.props;
       }
 
       // Run setup when DOM is ready
-      if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupDebugGrid);
-      } else {
-        setupDebugGrid();
-      }
+      // if (document.readyState === 'loading') {
+      //   document.addEventListener('DOMContentLoaded', setupDebugGrid);
+      // } else {
+      //   setupDebugGrid();
+      // }
     </script>
   </body>
 </html>
@@ -146,6 +146,11 @@ const { title } = Astro.props;
     width: 100%;
     border-top: calc(var(--border-thickness) * 3) double var(--text-color);
     height: 0;
+  }
+
+  /* Experimentally removing the margin for the first hr on top */
+  hr:first-of-type {
+    margin-top: calc(-0.4 * var(--line-height));
   }
 
   a {
