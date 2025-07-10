@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // Configuration flag - set to false to hide the grid
-const SHOW_GRID = true;
+const SHOW_GRID = false;
 
 // ASCII art for "Demos" - will be used as fixed background
 const DEMOS_ASCII = [
@@ -16,7 +16,7 @@ const DEMOS_ASCII = [
 
 // Grid configuration - adjusted width to fit ASCII art
 const GRID_WIDTH = 60; // Increased to accommodate "Demos" text
-const GRID_HEIGHT = 20; // cells
+const GRID_HEIGHT = 10; // cells
 const TICK_RATE = 200; // ms between updates
 const TYPE1_SPAWN_CHANCE = 0.02; // 2% chance per tick
 const MAX_TYPE1_CHARS = 15; // maximum Type 1 characters
