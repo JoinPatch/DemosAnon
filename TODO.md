@@ -1,0 +1,1 @@
+Connect this to a Notion CMS so its super easy to edit/ update
