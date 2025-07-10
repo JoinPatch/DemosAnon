@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 // Configuration flag - set to false to hide the grid
-const SHOW_GRID = false;
+const SHOW_GRID = true;
 
 // ASCII art for "Demos" - will be used as fixed background
 const DEMOS_ASCII = [
@@ -327,12 +327,12 @@ const GridAnimation = () => {
   }, [type1Chars, type2Char]);
 
   return (
-    <div style={styles.container}>
+    // <div style={styles.container}>
       <div style={styles.grid}>
         {SHOW_GRID && <div style={styles.debugOverlay} />}
         <pre style={styles.content}>{renderGrid()}</pre>
       </div>
-    </div>
+    // </div>
   );
 };
 
