@@ -3,6 +3,11 @@ import React, { useState, useEffect, useRef } from 'react';
 // Configuration flag - set to false to hide the grid
 const SHOW_GRID = false;
 
+// 📌 New configuration for centering and padding
+const CENTER_ASCII = true; // Set to true to center the DEMOS text
+// TODO: I don't think the horizontal padding does anything for a large grid width
+const HORIZONTAL_PADDING = 10; // Characters of padding on each side
+
 // ASCII art for "Demos" - will be used as fixed background
 const DEMOS_ASCII = [
   'MM"""Yb.                                             ',
@@ -15,11 +20,16 @@ const DEMOS_ASCII = [
 ];
 
 // Grid configuration - adjusted width to fit ASCII art
-const GRID_WIDTH = 60; // Increased to accommodate "Demos" text
+const GRID_WIDTH = 80; // Increased to accommodate "Demos" text
 const GRID_HEIGHT = 10; // cells
 const TICK_RATE = 200; // ms between updates
-const TYPE1_SPAWN_CHANCE = 0.02; // 2% chance per tick
+const TYPE1_SPAWN_CHANCE = 0.02; // 2% chance per tick (after initial burst)
 const MAX_TYPE1_CHARS = 15; // maximum Type 1 characters
+
+// 🔥 Initial high-energy spawn configuration
+const INITIAL_SPAWN_COUNT = 8; // Number of ghosts to spawn immediately on load
+const INITIAL_SPAWN_DURATION = 2000; // Duration of high spawn rate in ms
+const INITIAL_SPAWN_CHANCE = 0.15; // 15% chance during initial burst
 
 // ASCII characters for entities
 const TYPE2_CHAR = '@'; // Changed from ◉ to @
@@ -80,12 +90,30 @@ const GridAnimation = () => {
     // Center the ASCII art vertically
     const startY = Math.floor((GRID_HEIGHT - DEMOS_ASCII.length) / 2);
     
+    // 🎯 Calculate horizontal positioning with optional centering and padding
+    let startX = 0;
+    const maxLineLength = Math.max(...DEMOS_ASCII.map(line => line.trimEnd().length));
+    
+    if (CENTER_ASCII) {
+      // Center the text horizontally with padding
+      startX = Math.floor((GRID_WIDTH - maxLineLength) / 2);
+      // Apply additional padding if specified
+      startX = Math.max(HORIZONTAL_PADDING, startX);
+    } else {
+      // Just apply padding from the left
+      startX = HORIZONTAL_PADDING;
+    }
+    
     // Place ASCII art in grid
     DEMOS_ASCII.forEach((line, y) => {
       const gridY = startY + y;
       if (gridY >= 0 && gridY < GRID_HEIGHT) {
-        for (let x = 0; x < Math.min(line.length, GRID_WIDTH); x++) {
-          grid[gridY][x] = line[x];
+        const trimmedLine = line.trimEnd(); // Remove trailing spaces for proper centering
+        for (let x = 0; x < trimmedLine.length; x++) {
+          const gridX = startX + x;
+          if (gridX >= 0 && gridX < GRID_WIDTH) {
+            grid[gridY][gridX] = trimmedLine[x];
+          }
         }
       }
     });
@@ -116,6 +144,10 @@ const GridAnimation = () => {
   const [type2Char, setType2Char] = useState(null);
   const [eatenCount, setEatenCount] = useState(0);
   const tickRef = useRef(null);
+  
+  // 🔥 State for initial high-energy spawn period
+  const [isInitialSpawnPeriod, setIsInitialSpawnPeriod] = useState(true);
+  const initialSpawnTimeRef = useRef(Date.now());
 
   // Initialize Type 2 character at start
   useEffect(() => {
@@ -128,6 +160,18 @@ const GridAnimation = () => {
       vy: 0,
       lastMove: Date.now()
     });
+    
+    // 🔥 Spawn initial burst of ghost characters
+    for (let i = 0; i < INITIAL_SPAWN_COUNT; i++) {
+      setTimeout(() => spawnType1(), i * 50); // Stagger spawns slightly for visual effect
+    }
+    
+    // 🔥 End initial spawn period after duration
+    const timer = setTimeout(() => {
+      setIsInitialSpawnPeriod(false);
+    }, INITIAL_SPAWN_DURATION);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   // Generate random direction (horizontal or vertical only)
@@ -288,7 +332,9 @@ const GridAnimation = () => {
     }
 
     // Randomly spawn new Type 1 characters (ghost letters)
-    if (Math.random() < TYPE1_SPAWN_CHANCE) {
+    // 🔥 Use higher spawn chance during initial period
+    const currentSpawnChance = isInitialSpawnPeriod ? INITIAL_SPAWN_CHANCE : TYPE1_SPAWN_CHANCE;
+    if (Math.random() < currentSpawnChance) {
       spawnType1();
     }
   };
@@ -322,7 +368,7 @@ const GridAnimation = () => {
     tickRef.current = setInterval(updateCharacters, 50);
     
     return () => clearInterval(tickRef.current);
-  }, [type1Chars, type2Char]);
+  }, [type1Chars, type2Char, isInitialSpawnPeriod]);
 
   return (
     <div style={styles.container}>
