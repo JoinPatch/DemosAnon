@@ -23,17 +23,29 @@ const DEMOS_ASCII = [
 const GRID_WIDTH = 80; // Increased to accommodate "Demos" text
 const GRID_HEIGHT = 10; // cells
 const TICK_RATE = 200; // ms between updates
-const TYPE1_SPAWN_CHANCE = 0.02; // 2% chance per tick (after initial burst)
-const MAX_TYPE1_CHARS = 15; // maximum Type 1 characters
+const TYPE1_SPAWN_CHANCE = 0.04; // ⚡ Increased to 4% chance per tick (after initial burst)
+const MAX_TYPE1_CHARS = 20; // ⚡ Increased maximum Type 1 characters
 
 // 🔥 Initial high-energy spawn configuration
-const INITIAL_SPAWN_COUNT = 8; // Number of ghosts to spawn immediately on load
+const INITIAL_SPAWN_COUNT = 12; // ⚡ Increased number of ghosts to spawn immediately
 const INITIAL_SPAWN_DURATION = 2000; // Duration of high spawn rate in ms
-const INITIAL_SPAWN_CHANCE = 0.15; // 15% chance during initial burst
+const INITIAL_SPAWN_CHANCE = 0.20; // ⚡ Increased to 20% chance during initial burst
 
 // ASCII characters for entities
 const TYPE2_CHAR = '@'; // Changed from ◉ to @
 const EMPTY_CHAR = ' ';
+
+// 🎨 Color configuration for ghost characters
+const GHOST_COLORS = [
+  '#778BEB',  // Cyan
+  '#FFB347',  // Yellow/Gold
+  '#9370DB',  // Purple
+  '#000000',  // Black (for contrast)
+];
+
+// 🎨 Chaser character styling
+const CHASER_COLOR = '#FF5E5B'; // Bold black
+const CHASER_FONT_WEIGHT = 'bold';
 
 // CSS styles for horizontally centered grid
 const styles = {
@@ -176,7 +188,17 @@ const GridAnimation = () => {
 
   // Generate random direction (horizontal or vertical only)
   const getRandomDirection = () => {
-    const dirs = [[1, 0], [-1, 0], [0, 1], [0, -1]];
+    // 🕹️ Now includes diagonal movements for more dynamic paths
+    const dirs = [
+      [1, 0],   // right
+      [-1, 0],  // left
+      [0, 1],   // down
+      [0, -1],  // up
+      [1, 1],   // diagonal down-right
+      [-1, 1],  // diagonal down-left
+      [1, -1],  // diagonal up-right
+      [-1, -1]  // diagonal up-left
+    ];
     return dirs[Math.floor(Math.random() * dirs.length)];
   };
 
@@ -188,12 +210,16 @@ const GridAnimation = () => {
     const sourcePos = letterPositions.current[Math.floor(Math.random() * letterPositions.current.length)];
     const [vx, vy] = getRandomDirection();
     
+    // 🎨 Randomly assign a color to the ghost
+    const color = GHOST_COLORS[Math.floor(Math.random() * GHOST_COLORS.length)];
+    
     // Create ghost character that copies the letter from source position
     setType1Chars(prev => [...prev, {
       id: Date.now() + Math.random(),
       x: sourcePos.x,
       y: sourcePos.y,
       char: sourcePos.char, // Ghost copies the letter from its spawn position
+      color: color, // 🎨 Assigned color
       vx, vy,
       speed: 1 + Math.random() * 0.5, // Variable speed
       velocityDecay: 0.95 + Math.random() * 0.04, // How fast it slows down
@@ -228,19 +254,21 @@ const GridAnimation = () => {
       if (newX < 0 || newX >= GRID_WIDTH) {
         char.vx = -char.vx;
         newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX));
-        // Randomly change to vertical movement
-        if (Math.random() > 0.5) {
-          char.vx = 0;
-          char.vy = Math.random() > 0.5 ? 1 : -1;
+        // 🕹️ Randomly change direction with preference for diagonals
+        if (Math.random() > 0.3) {
+          const [newVx, newVy] = getRandomDirection();
+          char.vx = newVx;
+          char.vy = newVy;
         }
       }
       if (newY < 0 || newY >= GRID_HEIGHT) {
         char.vy = -char.vy;
         newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY));
-        // Randomly change to horizontal movement
-        if (Math.random() > 0.5) {
-          char.vy = 0;
-          char.vx = Math.random() > 0.5 ? 1 : -1;
+        // 🕹️ Randomly change direction with preference for diagonals
+        if (Math.random() > 0.3) {
+          const [newVx, newVy] = getRandomDirection();
+          char.vx = newVx;
+          char.vy = newVy;
         }
       }
 
@@ -258,7 +286,7 @@ const GridAnimation = () => {
       if (!prev) return null;
       
       const timeSinceMove = now - prev.lastMove;
-      if (timeSinceMove < TICK_RATE * 0.8) return prev; // Slightly faster than Type 1
+      if (timeSinceMove < TICK_RATE * 0.5) return prev; // ⚡ Much faster - moves at 2x speed
 
       // Find nearest Type 1 character
       let target = null;
@@ -334,7 +362,9 @@ const GridAnimation = () => {
     // Randomly spawn new Type 1 characters (ghost letters)
     // 🔥 Use higher spawn chance during initial period
     const currentSpawnChance = isInitialSpawnPeriod ? INITIAL_SPAWN_CHANCE : TYPE1_SPAWN_CHANCE;
-    if (Math.random() < currentSpawnChance) {
+    
+    // ⚡ Ensure at least one ghost is always visible
+    if (type1Chars.length === 0 || Math.random() < currentSpawnChance) {
       spawnType1();
     }
   };
@@ -344,11 +374,18 @@ const GridAnimation = () => {
     // Start with background grid (copy it to avoid mutation)
     const displayGrid = backgroundGrid.current.map(row => [...row]);
     
-    // Overlay Type 1 characters (ghost letters)
+    // 🎨 Track colored characters and their positions for rendering
+    const coloredChars = new Map(); // key: "y-x", value: {char, color}
+    
+    // Overlay Type 1 characters (ghost letters) with their colors
     type1Chars.forEach(char => {
       if (char.y >= 0 && char.y < GRID_HEIGHT && 
           char.x >= 0 && char.x < GRID_WIDTH) {
         displayGrid[char.y][char.x] = char.char; // Use the ghost's letter
+        coloredChars.set(`${char.y}-${char.x}`, {
+          char: char.char,
+          color: char.color
+        });
       }
     });
     
@@ -357,10 +394,58 @@ const GridAnimation = () => {
         type2Char.y >= 0 && type2Char.y < GRID_HEIGHT && 
         type2Char.x >= 0 && type2Char.x < GRID_WIDTH) {
       displayGrid[type2Char.y][type2Char.x] = TYPE2_CHAR;
+      // 🎨 Mark chaser position for special styling
+      coloredChars.set(`${type2Char.y}-${type2Char.x}`, {
+        char: TYPE2_CHAR,
+        color: CHASER_COLOR,
+        fontWeight: CHASER_FONT_WEIGHT
+      });
     }
     
-    // Convert to string
-    return displayGrid.map(row => row.join('')).join('\n');
+    // 🎨 Convert to JSX with colored spans
+    return displayGrid.map((row, y) => {
+      const rowElements = [];
+      let currentText = '';
+      
+      for (let x = 0; x < row.length; x++) {
+        const key = `${y}-${x}`;
+        const coloredChar = coloredChars.get(key);
+        
+        if (coloredChar) {
+          // Push any accumulated plain text
+          if (currentText) {
+            rowElements.push(currentText);
+            currentText = '';
+          }
+          // Push colored character
+          rowElements.push(
+            <span 
+              key={key} 
+              style={{ 
+                color: coloredChar.color,
+                fontWeight: coloredChar.fontWeight || 'normal'
+              }}
+            >
+              {coloredChar.char}
+            </span>
+          );
+        } else {
+          // Accumulate plain text
+          currentText += row[x];
+        }
+      }
+      
+      // Push any remaining plain text
+      if (currentText) {
+        rowElements.push(currentText);
+      }
+      
+      return (
+        <div key={y} style={{ margin: 0, padding: 0, height: 'var(--line-height)' }}>
+          {rowElements}
+        </div>
+      );
+    });
   };
 
   // Animation loop
@@ -374,7 +459,7 @@ const GridAnimation = () => {
     <div style={styles.container}>
       <div style={styles.grid}>
         {SHOW_GRID && <div style={styles.debugOverlay} />}
-        <pre style={styles.content}>{renderGrid()}</pre>
+        <div style={styles.content}>{renderGrid()}</div>
       </div>
     </div>
   );
