@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+// Configuration flag - set to false to hide the grid
+const SHOW_GRID = true;
+
 // ASCII art for "Demos" - will be used as fixed background
 const DEMOS_ASCII = [
   'MM"""Yb.                                             ',
@@ -22,7 +25,7 @@ const MAX_TYPE1_CHARS = 15; // maximum Type 1 characters
 const TYPE2_CHAR = '@'; // Changed from ◉ to @
 const EMPTY_CHAR = ' ';
 
-// CSS styles matching the reference design
+// CSS styles for centered grid
 const styles = {
   container: {
     fontFamily: '"JetBrains Mono", monospace',
@@ -30,7 +33,11 @@ const styles = {
     lineHeight: '1.20rem',
     backgroundColor: '#fff',
     color: '#000',
-    padding: '1.20rem 2ch',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    minHeight: '100vh',
+    padding: '2rem',
     '@media (prefers-color-scheme: dark)': {
       backgroundColor: '#000',
       color: '#fff',
@@ -62,29 +69,8 @@ const styles = {
   },
   content: {
     position: 'relative',
-    zIndex: 2
-  },
-  controls: {
-    marginTop: 'var(--line-height)',
-    display: 'flex',
-    gap: '1ch',
-    alignItems: 'center'
-  },
-  button: {
-    border: '2px solid currentColor',
-    padding: 'calc(var(--line-height) / 2 - 2px) 1ch',
-    background: 'transparent',
-    color: 'inherit',
-    fontFamily: 'inherit',
-    fontSize: 'inherit',
-    fontWeight: '600',
-    textTransform: 'uppercase',
-    cursor: 'pointer',
-    height: 'calc(var(--line-height) * 2)'
-  },
-  stats: {
-    marginTop: 'var(--line-height)',
-    fontFamily: 'inherit'
+    zIndex: 2,
+    margin: 0
   }
 };
 
@@ -130,8 +116,6 @@ const GridAnimation = () => {
   const letterPositions = useRef(findLetterPositions(backgroundGrid.current));
   const [type1Chars, setType1Chars] = useState([]);
   const [type2Char, setType2Char] = useState(null);
-  const [isPaused, setIsPaused] = useState(false);
-  const [showDebug, setShowDebug] = useState(false);
   const [eatenCount, setEatenCount] = useState(0);
   const tickRef = useRef(null);
 
@@ -337,55 +321,16 @@ const GridAnimation = () => {
 
   // Animation loop
   useEffect(() => {
-    if (!isPaused) {
-      tickRef.current = setInterval(updateCharacters, 50);
-    } else {
-      clearInterval(tickRef.current);
-    }
+    tickRef.current = setInterval(updateCharacters, 50);
     
     return () => clearInterval(tickRef.current);
-  }, [isPaused, type1Chars, type2Char]);
+  }, [type1Chars, type2Char]);
 
   return (
     <div style={styles.container}>
-      <h2 style={{ fontWeight: 800, textTransform: 'uppercase' }}>
-        ASCII Grid Animation - "Demos"
-      </h2>
-      
-      <div style={{ ...styles.grid, position: 'relative' }}>
-        {showDebug && <div style={styles.debugOverlay} />}
-        <pre style={{ ...styles.content, margin: 0 }}>{renderGrid()}</pre>
-      </div>
-      
-      <div style={styles.controls}>
-        <button 
-          style={styles.button}
-          onClick={() => setIsPaused(!isPaused)}
-        >
-          {isPaused ? 'Play' : 'Pause'}
-        </button>
-        <button 
-          style={styles.button}
-          onClick={() => {
-            setType1Chars([]);
-            setEatenCount(0);
-          }}
-        >
-          Clear
-        </button>
-        <label style={{ display: 'flex', alignItems: 'center', gap: '1ch' }}>
-          <input 
-            type="checkbox" 
-            checked={showDebug}
-            onChange={(e) => setShowDebug(e.target.checked)}
-          />
-          Show Grid
-        </label>
-      </div>
-      
-      <div style={styles.stats}>
-        <div>Ghost Letters: {type1Chars.length}</div>
-        <div>Letters Eaten by {TYPE2_CHAR}: {eatenCount}</div>
+      <div style={styles.grid}>
+        {SHOW_GRID && <div style={styles.debugOverlay} />}
+        <pre style={styles.content}>{renderGrid()}</pre>
       </div>
     </div>
   );
