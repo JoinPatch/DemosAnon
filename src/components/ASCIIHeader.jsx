@@ -25,7 +25,7 @@ const MAX_TYPE1_CHARS = 15; // maximum Type 1 characters
 const TYPE2_CHAR = '@'; // Changed from ◉ to @
 const EMPTY_CHAR = ' ';
 
-// CSS styles for centered grid
+// CSS styles for horizontally centered grid
 const styles = {
   container: {
     fontFamily: '"JetBrains Mono", monospace',
@@ -35,9 +35,8 @@ const styles = {
     color: '#000',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'center',
-    minHeight: '100vh',
-    padding: '2rem',
+    margin: 0,
+    padding: 0,
     '@media (prefers-color-scheme: dark)': {
       backgroundColor: '#000',
       color: '#fff',
@@ -47,7 +46,6 @@ const styles = {
     position: 'relative',
     width: `${GRID_WIDTH}ch`,
     height: `calc(${GRID_HEIGHT} * var(--line-height, 1.20rem))`,
-    border: '2px solid currentColor',
     overflow: 'hidden',
     whiteSpace: 'pre',
     fontVariantNumeric: 'tabular-nums lining-nums',
@@ -327,12 +325,12 @@ const GridAnimation = () => {
   }, [type1Chars, type2Char]);
 
   return (
-    // <div style={styles.container}>
+    <div style={styles.container}>
       <div style={styles.grid}>
         {SHOW_GRID && <div style={styles.debugOverlay} />}
         <pre style={styles.content}>{renderGrid()}</pre>
       </div>
-    // </div>
+    </div>
   );
 };
 
