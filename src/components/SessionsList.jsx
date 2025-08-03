@@ -132,6 +132,12 @@ const SessionsList = ({ sessions = [] }) => {
         }
 
         /* Image strip (subtle carousel) */
+        .image-strip {
+          margin-top: var(--line-height);
+          border-top: var(--border-thickness) solid var(--text-color); /* black line */
+          padding-top: calc(var(--line-height) / 2);
+        }
+
         .image-strip__scroller {
           display: flex;
           gap: 1ch;
