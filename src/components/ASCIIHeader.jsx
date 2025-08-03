@@ -71,8 +71,7 @@ const styles = {
     height: `calc(${GRID_HEIGHT} * var(--line-height, 1.20rem))`,
     overflow: 'hidden',
     whiteSpace: 'pre',
-    fontVariantNumeric: 'tabular-nums lining-nums',
-    '--line-height': '1.20rem'
+    fontVariantNumeric: 'tabular-nums lining-nums'
   },
   debugOverlay: {
     position: 'absolute',
@@ -103,18 +102,22 @@ const GridAnimation = () => {
     // Center the ASCII art vertically
     const startY = Math.floor((GRID_HEIGHT - DEMOS_ASCII.length) / 2);
     
-    // 🎯 Calculate horizontal positioning with optional centering and padding
+    // 🎯 Calculate horizontal positioning with optional centering and responsive padding
     let startX = 0;
     const maxLineLength = Math.max(...DEMOS_ASCII.map(line => line.trimEnd().length));
+
+    // Determine responsive horizontal padding (reduce on very small screens)
+    const smallScreen = typeof window !== 'undefined' && window.innerWidth < 480;
+    const effectivePadding = smallScreen ? 2 : HORIZONTAL_PADDING;
     
     if (CENTER_ASCII) {
       // Center the text horizontally with padding
       startX = Math.floor((GRID_WIDTH - maxLineLength) / 2);
       // Apply additional padding if specified
-      startX = Math.max(HORIZONTAL_PADDING, startX);
+      startX = Math.max(effectivePadding, startX);
     } else {
       // Just apply padding from the left
-      startX = HORIZONTAL_PADDING;
+      startX = effectivePadding;
     }
     
     // Place ASCII art in grid

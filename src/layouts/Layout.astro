@@ -460,6 +460,7 @@ const { title } = Astro.props;
   .ascii-banner {
     font-size: 16px;
     line-height: 19.2px;
+    --line-height: 1.2rem; /* default row height */
   }
 
   /* TODO: the line heights here are not effective, come back to this another time */
@@ -474,9 +475,9 @@ const { title } = Astro.props;
 
   @media (max-width: 480px) {
     .ascii-banner { 
-      font-size: 9.2px; 
-      line-height: 1px;
-      --line-height: 0.1rem; /* Even tighter vertical spacing only */
+      font-size: 7.8px; 
+      line-height: 6.5px;
+      --line-height: 0.6rem; /* Even tighter vertical spacing only */
     }
   }
 
