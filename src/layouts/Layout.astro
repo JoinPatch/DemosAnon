@@ -462,17 +462,21 @@ const { title } = Astro.props;
     line-height: 19.2px;
   }
 
+  /* TODO: the line heights here are not effective, come back to this another time */
+
   @media (max-width: 700px) {
     .ascii-banner { 
       font-size: 10.5px; 
-      line-height: 8px; 
+      line-height: 8px;
+      --line-height: 0.9rem; /* Tighter vertical spacing only */
     }
   }
 
   @media (max-width: 480px) {
     .ascii-banner { 
-      font-size: 9px; 
-      line-height: 1px; 
+      font-size: 9.2px; 
+      line-height: 1px;
+      --line-height: 0.1rem; /* Even tighter vertical spacing only */
     }
   }
 
