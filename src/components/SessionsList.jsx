@@ -1,5 +1,5 @@
 // src/components/SessionsList.jsx
-import React, { useState } from 'react';
+import React, { useMemo, useRef, useState, useEffect } from 'react';
 
 const SessionsList = ({ sessions = [] }) => {
   const INITIAL_SESSIONS = 6;
@@ -14,9 +14,33 @@ const SessionsList = ({ sessions = [] }) => {
     setDisplayCount(prev => Math.min(prev + LOAD_MORE_COUNT, sessions.length));
   };
 
-  const showAll = () => {
-    setDisplayCount(sessions.length);
-  };
+  // --- Build-time image discovery (Vite) -------------------------------------
+  // We eagerly import URLs to all images inside src/data/sessions/session{N}/
+  const imagesBySession = useMemo(() => {
+    // NOTE: pattern is relative to this file. Adjust if you move directories.
+    const modules = import.meta.glob(
+      '../data/sessions/**/**/*.{png,jpg,jpeg,webp,gif}',
+      { eager: true, as: 'url' }
+    );
+
+    const grouped = {};
+    for (const [path, url] of Object.entries(modules)) {
+      // Extract the session number from ".../session29/filename.jpg"
+      const m = path.match(/session(\d+)[/\\][^/\\]+\.(?:png|jpe?g|webp|gif)$/i);
+      if (!m) continue;
+      const num = Number(m[1]);
+      if (!grouped[num]) grouped[num] = [];
+      grouped[num].push({ url, path });
+    }
+
+    // Optional: stable ordering by filename
+    for (const key of Object.keys(grouped)) {
+      grouped[key].sort((a, b) => a.path.localeCompare(b.path));
+      grouped[key] = grouped[key].map(x => x.url); // keep only URLs for rendering
+    }
+    return grouped;
+  }, []);
+  // ---------------------------------------------------------------------------
 
   // Helper: parse a line with markdown links [text](url) into JSX parts
   const parseInlineLinks = (text, keyPrefix) => {
@@ -40,9 +64,7 @@ const SessionsList = ({ sessions = [] }) => {
       );
       lastIndex = match.index + match[0].length;
     }
-    if (lastIndex < text.length) {
-      parts.push(text.substring(lastIndex));
-    }
+    if (lastIndex < text.length) parts.push(text.substring(lastIndex));
     return parts.length ? parts : text;
   };
 
@@ -51,7 +73,6 @@ const SessionsList = ({ sessions = [] }) => {
     if (!content) return null;
 
     const lines = content.split('\n');
-
     const blocks = [];
     let currentList = [];
 
@@ -72,80 +93,131 @@ const SessionsList = ({ sessions = [] }) => {
       const line = rawLine.trim();
       if (!line) return;
 
-      // Accept either "• " (your parser output) or "- " / "* " (fallback)
+      // Accept either "• " (parser output) or "- " / "* " (fallback)
       const bulletMatch = line.match(/^(?:• |- |\* )(.*)$/);
       if (bulletMatch) {
-        const bulletText = bulletMatch[1];
-        currentList.push(parseInlineLinks(bulletText, `line-${idx}`));
+        currentList.push(parseInlineLinks(bulletMatch[1], `line-${idx}`));
         return;
       }
 
-      // Non-bullet: flush any open list, then push a paragraph
       flushList(idx);
       blocks.push(<p key={`p-${idx}`}>{parseInlineLinks(line, `p-${idx}`)}</p>);
     });
 
-    // Flush trailing list
     flushList('last');
-
     return blocks;
   };
 
   return (
     <>
       <style>{`
-        /* Use real unordered lists inside the session blocks */
+        /* Lists inside the session content */
         .session-content ul.session-list {
           list-style: disc;
           list-style-position: outside;
           padding-left: 2ch;
           margin: var(--line-height) 0;
         }
+        .session-content ul.session-list li { margin-bottom: 0.5em; }
 
-        .session-content ul.session-list li {
-          margin-bottom: 0.5em;
-        }
-
-        /* Remove previous custom bullet styling */
-        /* (No ::before bullets anymore) */
-
-        /* Optional: style the load-more row exactly like a session header */
+        /* Load-more row behaves like a header, without the marker */
         details.session-item.load-more summary {
           user-select: none;
+          list-style: none;
+          cursor: pointer;
+        }
+        details.session-item.load-more summary::marker,
+        details.session-item.load-more summary::-webkit-details-marker {
+          display: none;
+        }
+
+        /* Image strip (subtle carousel) */
+        .image-strip {
+          position: relative;
+          margin-top: var(--line-height);
+          border-top: var(--border-thickness) solid var(--text-color);
+          padding-top: calc(var(--line-height) / 2);
+        }
+        .image-strip__scroller {
+          display: flex;
+          gap: 1ch;
+          overflow-x: auto;
+          overflow-y: hidden;
+          padding-bottom: 0.25rem; /* space for hidden scrollbar on some browsers */
+          scroll-snap-type: x proximity;
+          -webkit-overflow-scrolling: touch;
+        }
+        .image-strip__scroller::-webkit-scrollbar {
+          height: calc(var(--line-height) / 2); /* subtle; keeps your aesthetic */
+        }
+        .image-strip__item {
+          flex: 0 0 auto;
+          height: 10rem;              /* FIXED HEIGHT: adjust as you like */
+          width: auto;
+          aspect-ratio: 4 / 3;        /* gives consistent tile width; remove if you want native widths */
+          scroll-snap-align: start;
+          border: var(--border-thickness) solid var(--text-color);
+          background: var(--background-color-alt);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .image-strip__item img {
+          display: block;
+          height: 100%;
+          width: 100%;
+          object-fit: cover;          /* fill tile nicely; switch to 'contain' if you prefer letterboxing */
+        }
+
+        /* Arrow buttons appear only when overflow exists */
+        .image-strip__nav {
+          position: absolute;
+          top: 0;
+          right: 0;
+          display: flex;
+          gap: 0.5ch;
+          transform: translateY(-100%);
+        }
+        .image-strip__btn {
+          height: calc(var(--line-height) * 1.4);
+          padding: 0 0.8ch;
+          line-height: calc(var(--line-height) * 1.4);
         }
       `}</style>
 
-      {visibleSessions.map((session) => (
-        <details key={session.number} className="session-item">
-          <summary>
-            Session {session.number}
-            {session.title && session.title !== `Session ${session.number}` ? `: ${session.title}` : ''}
-          </summary>
-          <div className="session-content">
-            {renderContent(session.content)}
-          </div>
-        </details>
-      ))}
+      {visibleSessions.map((session) => {
+        const imgs = imagesBySession[session.number] || [];
+        return (
+          <details key={session.number} className="session-item">
+            <summary>
+              Session {session.number}
+              {session.title && session.title !== `Session ${session.number}` ? `: ${session.title}` : ''}
+            </summary>
+
+            <div className="session-content">
+              {renderContent(session.content)}
+              {imgs.length > 0 && <ImageStrip images={imgs} />}
+            </div>
+          </details>
+        );
+      })}
 
       {hasMore && (
         <details
           className="session-item load-more"
-          /* Keep it visually identical; prevent toggle on click */
           onToggle={(e) => {
-            // If the browser tries to open it (e.g., via keyboard), immediately close
-            if (e.currentTarget.open) {
-              e.currentTarget.open = false;
-            }
+            // Never leave this open (keyboard users); keep visual parity with session headers
+            if (e.currentTarget.open) e.currentTarget.open = false;
           }}
         >
           <summary
             onClick={(e) => {
-              e.preventDefault(); // don't toggle the <details>
+              e.preventDefault();
               loadMore();
             }}
             title={`Load ${Math.min(LOAD_MORE_COUNT, remainingCount)} more`}
           >
-            Load more sessions…
+            Load more…
           </summary>
         </details>
       )}
@@ -154,3 +226,52 @@ const SessionsList = ({ sessions = [] }) => {
 };
 
 export default SessionsList;
+
+/* ---- ImageStrip: tiny horizontal carousel --------------------------------- */
+const ImageStrip = ({ images }) => {
+  const scrollerRef = useRef(null);
+  const [showNav, setShowNav] = useState(false);
+
+  // Show arrows only if content overflows horizontally
+  useEffect(() => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const check = () => setShowNav(el.scrollWidth > el.clientWidth + 4);
+    check();
+    const ro = new ResizeObserver(check);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  const scrollByAmount = (dir) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const amount = Math.max(el.clientWidth * 0.9, 200);
+    el.scrollBy({ left: dir * amount, behavior: 'smooth' });
+  };
+
+  return (
+    <div className="image-strip">
+      {showNav && (
+        <div className="image-strip__nav" aria-hidden="true">
+          <button className="image-strip__btn" onClick={() => scrollByAmount(-1)} aria-label="Scroll images left">
+            ◀
+          </button>
+          <button className="image-strip__btn" onClick={() => scrollByAmount(1)} aria-label="Scroll images right">
+            ▶
+          </button>
+        </div>
+      )}
+      <div className="image-strip__scroller" ref={scrollerRef}>
+        {/* Fades for subtle cue */}
+        {showNav}
+        {images.map((src, i) => (
+          <div className="image-strip__item" key={i}>
+            <img src={src} alt={`Session image ${i + 1}`} loading="lazy" />
+          </div>
+        ))}
+        {showNav}
+      </div>
+    </div>
+  );
+};
