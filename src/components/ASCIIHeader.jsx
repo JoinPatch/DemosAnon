@@ -54,8 +54,6 @@ const CHASER_FONT_WEIGHT = 'bold';
 const styles = {
   container: {
     fontFamily: '"JetBrains Mono", monospace',
-    fontSize: '16px',
-    lineHeight: '1.20rem',
     backgroundColor: '#fff',
     color: '#000',
     display: 'flex',
@@ -480,7 +478,7 @@ const GridAnimation = () => {
   }, [type1Chars, type2Char, isInitialSpawnPeriod]);
 
   return (
-    <div style={styles.container}>
+    <div className="ascii-banner" style={styles.container}>
       <div style={styles.grid}>
         {SHOW_GRID && <div style={styles.debugOverlay} />}
         <div style={styles.content}>{renderGrid()}</div>

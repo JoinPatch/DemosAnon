@@ -353,7 +353,6 @@ const { title } = Astro.props;
     margin: 0;
     padding: 0;
   }
-
   li::marker {
     line-height: 0;
   }
@@ -457,4 +456,24 @@ const { title } = Astro.props;
   .debug .off-grid {
     background: rgba(255, 0, 0, 0.1);
   }
+  
+  .ascii-banner {
+    font-size: 16px;
+    line-height: 19.2px;
+  }
+
+  @media (max-width: 700px) {
+    .ascii-banner { 
+      font-size: 10.5px; 
+      line-height: 8px; 
+    }
+  }
+
+  @media (max-width: 480px) {
+    .ascii-banner { 
+      font-size: 9px; 
+      line-height: 1px; 
+    }
+  }
+
 </style>
