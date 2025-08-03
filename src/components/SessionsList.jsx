@@ -132,41 +132,45 @@ const SessionsList = ({ sessions = [] }) => {
         }
 
         /* Image strip (subtle carousel) */
-        .image-strip {
-          position: relative;
-          margin-top: var(--line-height);
-          border-top: var(--border-thickness) solid var(--text-color);
-          padding-top: calc(var(--line-height) / 2);
-        }
         .image-strip__scroller {
           display: flex;
           gap: 1ch;
           overflow-x: auto;
           overflow-y: hidden;
-          padding-bottom: 0.25rem; /* space for hidden scrollbar on some browsers */
+          padding-bottom: 0.25rem;
           scroll-snap-type: x proximity;
           -webkit-overflow-scrolling: touch;
+
+          /* ensure all tiles share the same top baseline */
+          align-items: flex-start;
         }
-        .image-strip__scroller::-webkit-scrollbar {
-          height: calc(var(--line-height) / 2); /* subtle; keeps your aesthetic */
+
+        /* override the global * + * margin for tiles inside the strip */
+        .image-strip__scroller > * + * {
+          margin-top: 0 !important;
         }
+
         .image-strip__item {
           flex: 0 0 auto;
-          height: 10rem;              /* FIXED HEIGHT: adjust as you like */
+          height: 10rem;
           width: auto;
-          aspect-ratio: 4 / 3;        /* gives consistent tile width; remove if you want native widths */
+          aspect-ratio: 4 / 3;
           scroll-snap-align: start;
           border: var(--border-thickness) solid var(--text-color);
           background: var(--background-color-alt);
           display: flex;
           align-items: center;
           justify-content: center;
+
+          /* avoid box-model surprises at fixed height */
+          box-sizing: border-box;
         }
+
         .image-strip__item img {
           display: block;
           height: 100%;
           width: 100%;
-          object-fit: cover;          /* fill tile nicely; switch to 'contain' if you prefer letterboxing */
+          object-fit: cover; /* or 'contain' if you prefer letterboxing */
         }
 
         /* Arrow buttons appear only when overflow exists */
@@ -230,19 +234,38 @@ export default SessionsList;
 /* ---- ImageStrip: tiny horizontal carousel --------------------------------- */
 const ImageStrip = ({ images }) => {
   const scrollerRef = useRef(null);
-  const [showNav, setShowNav] = useState(false);
+  const [hasOverflow, setHasOverflow] = useState(false);
 
-  // Show arrows only if content overflows horizontally
+  // Re-check overflow whenever size changes or images load
   useEffect(() => {
     const el = scrollerRef.current;
     if (!el) return;
-    const check = () => setShowNav(el.scrollWidth > el.clientWidth + 4);
-    check();
+
+    const check = () => {
+      // +4 as a small tolerance for sub-pixel rounding
+      setHasOverflow(el.scrollWidth > el.clientWidth + 4);
+    };
+
+    // Initial + resize-based checks
     const ro = new ResizeObserver(check);
     ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
 
+    // Also re-check once images actually load (intrinsic sizes)
+    const imgs = Array.from(el.querySelectorAll('img'));
+    const onLoad = () => check();
+    imgs.forEach(img => img.addEventListener('load', onLoad, { once: true }));
+
+    // Tiny post-mount tick in case layout settles late
+    const t = setTimeout(check, 0);
+
+    return () => {
+      clearTimeout(t);
+      ro.disconnect();
+      imgs.forEach(img => img.removeEventListener('load', onLoad));
+    };
+  }, [images]);
+
+  // Optional arrow buttons (kept simple); hide when no overflow
   const scrollByAmount = (dir) => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -251,8 +274,8 @@ const ImageStrip = ({ images }) => {
   };
 
   return (
-    <div className="image-strip">
-      {showNav && (
+    <div className="image-strip" style={{ '--strip-height': '9rem' }}>
+      {hasOverflow && (
         <div className="image-strip__nav" aria-hidden="true">
           <button className="image-strip__btn" onClick={() => scrollByAmount(-1)} aria-label="Scroll images left">
             ◀
@@ -262,15 +285,16 @@ const ImageStrip = ({ images }) => {
           </button>
         </div>
       )}
-      <div className="image-strip__scroller" ref={scrollerRef}>
-        {/* Fades for subtle cue */}
-        {showNav}
+      <div
+        className="image-strip__scroller"
+        ref={scrollerRef}
+        data-overflow={hasOverflow ? 'true' : 'false'}
+      >
         {images.map((src, i) => (
           <div className="image-strip__item" key={i}>
             <img src={src} alt={`Session image ${i + 1}`} loading="lazy" />
           </div>
         ))}
-        {showNav}
       </div>
     </div>
   );
