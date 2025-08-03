@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+console.log("made by tim: https://timfarrelly.com");
+
 // Configuration flag - set to false to hide the grid
 const SHOW_GRID = false;
 
