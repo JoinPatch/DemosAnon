@@ -136,7 +136,7 @@ const GridAnimation = () => {
   // Find all letter positions in the background grid (not spaces or special chars)
   const findLetterPositions = (grid) => {
     const positions = [];
-    const letterRegex = /[a-zA-Z]/; // Only match actual letters
+    const letterRegex = /[a-zA-Z]/; // Only match actual letters 
     
     grid.forEach((row, y) => {
       row.forEach((char, x) => {
@@ -188,18 +188,25 @@ const GridAnimation = () => {
 
   // Generate random direction (horizontal or vertical only)
   const getRandomDirection = () => {
-    // 🕹️ Now includes diagonal movements for more dynamic paths
+    // 🕹️ Only cardinal directions - one axis at a time
     const dirs = [
       [1, 0],   // right
       [-1, 0],  // left
       [0, 1],   // down
       [0, -1],  // up
-      [1, 1],   // diagonal down-right
-      [-1, 1],  // diagonal down-left
-      [1, -1],  // diagonal up-right
-      [-1, -1]  // diagonal up-left
     ];
     return dirs[Math.floor(Math.random() * dirs.length)];
+  };
+
+  // 🕹️ Get a perpendicular direction for zigzag movement
+  const getPerpendicularDirection = (vx, vy) => {
+    if (vx !== 0) {
+      // Currently moving horizontally, switch to vertical
+      return [0, Math.random() > 0.5 ? 1 : -1];
+    } else {
+      // Currently moving vertically, switch to horizontal
+      return [Math.random() > 0.5 ? 1 : -1, 0];
+    }
   };
 
   // Spawn new Type 1 character (ghost letter from "Demos" text)
@@ -223,7 +230,9 @@ const GridAnimation = () => {
       vx, vy,
       speed: 1 + Math.random() * 0.5, // Variable speed
       velocityDecay: 0.95 + Math.random() * 0.04, // How fast it slows down
-      lastMove: Date.now()
+      lastMove: Date.now(),
+      movesSinceDirectionChange: 0, // 🕹️ Track moves for zigzag behavior
+      movesBeforeDirectionChange: 2 + Math.floor(Math.random() * 3) // 🕹️ Change direction every 2-4 moves
     }]);
   };
 
@@ -246,38 +255,50 @@ const GridAnimation = () => {
         return { ...char, vx: 0, vy: 0, speed: 0 };
       }
 
+      // 🕹️ Check if it's time to change direction for zigzag movement
+      let newVx = char.vx;
+      let newVy = char.vy;
+      let movesSinceDirectionChange = char.movesSinceDirectionChange + 1;
+      let movesBeforeDirectionChange = char.movesBeforeDirectionChange;
+      
+      // Change direction after specified number of moves
+      if (movesSinceDirectionChange >= movesBeforeDirectionChange) {
+        // Switch to perpendicular direction
+        [newVx, newVy] = getPerpendicularDirection(char.vx, char.vy);
+        movesSinceDirectionChange = 0;
+        movesBeforeDirectionChange = 2 + Math.floor(Math.random() * 3); // Next change in 2-4 moves
+      }
+
       // Calculate new position
-      let newX = char.x + char.vx;
-      let newY = char.y + char.vy;
+      let newX = char.x + newVx;
+      let newY = char.y + newVy;
 
       // Bounce off walls and change direction
       if (newX < 0 || newX >= GRID_WIDTH) {
-        char.vx = -char.vx;
+        newVx = -newVx;
         newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX));
-        // 🕹️ Randomly change direction with preference for diagonals
-        if (Math.random() > 0.3) {
-          const [newVx, newVy] = getRandomDirection();
-          char.vx = newVx;
-          char.vy = newVy;
-        }
+        // 🕹️ Switch to perpendicular movement on wall hit
+        [newVx, newVy] = getPerpendicularDirection(newVx, newVy);
+        movesSinceDirectionChange = 0;
       }
       if (newY < 0 || newY >= GRID_HEIGHT) {
-        char.vy = -char.vy;
+        newVy = -newVy;
         newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY));
-        // 🕹️ Randomly change direction with preference for diagonals
-        if (Math.random() > 0.3) {
-          const [newVx, newVy] = getRandomDirection();
-          char.vx = newVx;
-          char.vy = newVy;
-        }
+        // 🕹️ Switch to perpendicular movement on wall hit
+        [newVx, newVy] = getPerpendicularDirection(newVx, newVy);
+        movesSinceDirectionChange = 0;
       }
 
       return {
         ...char,
         x: newX,
         y: newY,
+        vx: newVx,
+        vy: newVy,
         speed: newSpeed,
-        lastMove: now
+        lastMove: now,
+        movesSinceDirectionChange,
+        movesBeforeDirectionChange
       };
     }));
 
