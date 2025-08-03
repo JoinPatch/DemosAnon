@@ -1,12 +1,31 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ASCIIHeader from '../components/ASCIIHeader.jsx';
+import SessionsList from '../components/SessionsList.jsx';
+import { parseSessionsMarkdown } from '../utils/sessions-parser.js';
+
+// Import the markdown file as raw text
+import sessionsMarkdown from '../data/sessions.md?raw';
+
+// Parse sessions from markdown
+console.log(sessionsMarkdown);
+const sessions = parseSessionsMarkdown(sessionsMarkdown) as Array<{
+  number: number;
+  title?: string;
+  content: string;
+}>;
+
+// console.log('Raw markdown:', sessionsMarkdown);
+console.log('Type:', typeof sessionsMarkdown);
+
+console.log("sessions in home");
+console.log(sessions);
 ---
 
-<Layout title="DEMOS - ASCII Art">
+<Layout title="DEMOS ANON">
   <ASCIIHeader client:load />
     
-  <hr />
+  <hr />  
   
   <h2>About</h2>
   <p>
@@ -18,84 +37,18 @@ import ASCIIHeader from '../components/ASCIIHeader.jsx';
 
   <p>
     We hope that Demos Anon encourages more hackers to share their work, collaborate, 
-    and perhaps encourage their next project to be more ambitious.
+    and perhaps encourage their next project to be more ambitious. Normalise building!
   </p>
 
   <p>
-    Current organisers: Lucy Daly (ldaly4@tcd.ie) 
+    Current organisers: Lucy Daly (ldaly4@tcd.ie), Daire Bohan (bohan.daire@gmail.com) 
     & Cian Donovan (cian@donovan.cloud). <em>If you would like to attend a session, please 
     email one of us and tell us what you're interested in.</em>
   </p>
 
-  <details>
-    <summary>Session 31</summary>
-    <p>To be filled out</p>
-  </details>
-
-  <details>
-    <summary>Session 30</summary>
-    <p>To be filled out</p>
-  </details>
-
-  <details>
-    <summary>Session 29</summary>
-    <p>To be filled out</p>
-  </details>
+  <h2>Demos</h2>
   
-  <details>
-    <summary>Session 28</summary>
-    <p>Temp</p>
-  </details>
-
-  <details>
-    <summary>Session 27</summary>
-    <p>To be filled out</p>
-  </details>
-
-  <details>
-    <summary>Session 26</summary>
-    <p>To be filled out</p>
-  </details>
-
-  <details>
-    <summary>Session 25</summary>
-    <p>To be filled out</p>
-  </details>
-
-  <details>
-    <summary>Session 24</summary>
-    <p>To be filled out</p>
-  </details>
-
-  <details>
-    <summary>Session 24</summary>
-    <p>To be filled out</p>
-  </details>
-
-  <br />
-
-  <ul class="tree">
-    <li>
-      <p style="margin: 0;">
-        <strong>/demos/organisers</strong>
-      </p>
-      <ul>
-        <li>current
-          <ul>
-            <li>Lucy Daly - lucydaly [at] gmail [dot] com</li>
-            <li>Cian O'Donovan - cian [at] donovan [dot] cloud</li>
-            <li>Daire Bohan - dara [at] bura [dot] games</li>
-          </ul>
-        </li>
-        <li>past
-          <ul>
-            <li>Tim Farrelly - tim [at] gmail [dot] com</li>
-            <li>Tom McCarthy - tommccarthyprojects [at] gmail [dot] com</li>
-          </ul>
-        </li>
-      </ul>
-    </li>
-  </ul>
+  <SessionsList sessions={sessions as any} client:load />
 
   <hr />
 
@@ -108,8 +61,9 @@ import ASCIIHeader from '../components/ASCIIHeader.jsx';
     
     <p><strong>Organisers</strong></p>
     <ul>
-      <li>Daire Bohan - dara [at] bura.games</li>
+      <li>Daire Bohan - bohan.daire [at] gmail.com</li>
       <li>Lucy Daly - ldaly4 [at] tcd.ie</li>
+      <li>Cian Donovan - cian [at] donovan.cloud</li>
     </ul>
     
     <p><strong>Previous Organisers</strong></p>
@@ -126,7 +80,7 @@ import ASCIIHeader from '../components/ASCIIHeader.jsx';
 
   <details>
     <summary>How?</summary>
-    <p>This is a private event, please contact Tim (timf34 [at] gmail.com) or Lucy (ldaly4 [at] tcd.ie) if it sounds like your kind of thing!</p>
+    <p>This is a private event, please contact Lucy (ldaly4 [at] tcd.ie) or Cian (cian [at] donovan.cloud) if it sounds like your kind of thing!</p>
   </details>
 
   <hr />
