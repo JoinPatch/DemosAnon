@@ -8,8 +8,7 @@ const SHOW_GRID = false;
 
 // 📌 New configuration for centering and padding
 const CENTER_ASCII = true; // Set to true to center the DEMOS text
-// TODO: I don't think the horizontal padding does anything for a large grid width
-const HORIZONTAL_PADDING = 10; // Characters of padding on each side
+const HORIZONTAL_PADDING = 2; // Characters of padding on each side (when applicable)
 
 // ASCII art for "Demos" - will be used as fixed background
 const DEMOS_ASCII = [
@@ -22,35 +21,28 @@ const DEMOS_ASCII = [
   'MMmmmdP\'    `Mbmmd\'  MM    MM    MM  `Ybmd9\'  M9mmmP\''
 ];
 
-// Grid configuration - adjusted width to fit ASCII art
-const GRID_WIDTH = 80; // Increased to accommodate "Demos" text
-const GRID_HEIGHT = 10; // cells
-const TICK_RATE = 200; // ms between updates
-const TYPE1_SPAWN_CHANCE = 0.04; // ⚡ Increased to 4% chance per tick (after initial burst)
-const MAX_TYPE1_CHARS = 20; // ⚡ Increased maximum Type 1 characters
+// Grid configuration
+const GRID_WIDTH = 80;  // cols
+const GRID_HEIGHT = 10; // rows
+const TICK_RATE = 200;  // ms
+const TYPE1_SPAWN_CHANCE = 0.04;
+const MAX_TYPE1_CHARS = 20;
 
 // 🔥 Initial high-energy spawn configuration
-const INITIAL_SPAWN_COUNT = 12; // ⚡ Increased number of ghosts to spawn immediately
-const INITIAL_SPAWN_DURATION = 2000; // Duration of high spawn rate in ms
-const INITIAL_SPAWN_CHANCE = 0.20; // ⚡ Increased to 20% chance during initial burst
+const INITIAL_SPAWN_COUNT = 12;
+const INITIAL_SPAWN_DURATION = 2000;
+const INITIAL_SPAWN_CHANCE = 0.20;
 
-// ASCII characters for entities
-const TYPE2_CHAR = '@'; // Changed from ◉ to @
+// ASCII characters
+const TYPE2_CHAR = '@';
 const EMPTY_CHAR = ' ';
 
-// 🎨 Color configuration for ghost characters
-const GHOST_COLORS = [
-  '#778BEB',  // Cyan
-  '#FFB347',  // Yellow/Gold
-  '#9370DB',  // Purple
-  '#000000',  // Black (for contrast)
-];
-
-// 🎨 Chaser character styling
-const CHASER_COLOR = '#FF5E5B'; // Bold black
+// 🎨 Colors
+const GHOST_COLORS = ['#778BEB', '#FFB347', '#9370DB', '#000000'];
+const CHASER_COLOR = '#FF5E5B';
 const CHASER_FONT_WEIGHT = 'bold';
 
-// CSS styles for horizontally centered grid
+// CSS styles
 const styles = {
   container: {
     fontFamily: '"JetBrains Mono", monospace',
@@ -75,10 +67,7 @@ const styles = {
   },
   debugOverlay: {
     position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    top: 0, left: 0, right: 0, bottom: 0,
     pointerEvents: 'none',
     backgroundImage: `
       repeating-linear-gradient(rgba(0,0,0,0.1) 0 1px, transparent 1px 100%),
@@ -87,410 +76,270 @@ const styles = {
     backgroundSize: '1ch var(--line-height)',
     zIndex: 1
   },
-  content: {
-    position: 'relative',
-    zIndex: 2,
-    margin: 0
-  }
+  content: { position: 'relative', zIndex: 2, margin: 0 }
 };
 
 const GridAnimation = () => {
-  // Determine viewport width for responsive container alignment
-  // Initialize background grid with "Demos" ASCII art
-  const createBackgroundGrid = () => {
-    const grid = Array(GRID_HEIGHT).fill(null).map(() => Array(GRID_WIDTH).fill(EMPTY_CHAR));
-    
-    // Center the ASCII art vertically
-    const startY = Math.floor((GRID_HEIGHT - DEMOS_ASCII.length) / 2);
-    
-    // 🎯 Calculate horizontal positioning with optional centering and responsive padding
-    let startX = 0;
-    const maxLineLength = Math.max(...DEMOS_ASCII.map(line => line.trimEnd().length));
+  const gridRef = useRef(null);
 
-    // Determine responsive horizontal padding (reduce on very small screens)
-    const smallScreen = typeof window !== 'undefined' && window.innerWidth < 480;
-    const verySmallScreen = typeof window !== 'undefined' && window.innerWidth < 350;
+  // --- Helpers ---------------------------------------------------------------
+  const asciiWidth = useRef(Math.max(...DEMOS_ASCII.map(l => l.trimEnd().length))); // ≈ 50
+  const [startX, setStartX] = useState(0);
 
-    // Responsive padding: 10ch default, 2ch below 480px, 0ch below 350px
-    const effectivePadding = verySmallScreen ? 0 : (smallScreen ? 2 : HORIZONTAL_PADDING);
-    
-    if (CENTER_ASCII) {
-      if (verySmallScreen) {
-        // On very small screens, shift left more aggressively
-        // You can adjust this value - 0 puts it at the left edge, negative values would clip
-        startX = 4; // Or try 1 or 2 for slight padding
-      } else {
-        // Normal centering for larger screens
-        startX = Math.floor((GRID_WIDTH - maxLineLength) / 2);
-        startX = Math.max(effectivePadding, startX);
-      }
-    } else {
-      startX = effectivePadding;
+  const measureCharWidthPx = (containerEl) => {
+    // Create a hidden ruler element sized to 1ch within the same font context
+    const span = document.createElement('span');
+    span.textContent = '0';
+    span.style.visibility = 'hidden';
+    span.style.position = 'absolute';
+    span.style.whiteSpace = 'pre';
+    span.style.font = 'inherit';
+    span.style.width = '1ch';
+    containerEl.appendChild(span);
+    const width = span.getBoundingClientRect().width;
+    containerEl.removeChild(span);
+    return width || 8; // fallback
+  };
+
+  const computeStartX = (containerEl) => {
+    if (!containerEl) return 0;
+    const chPx = measureCharWidthPx(containerEl);
+    // How many character columns are ACTUALLY visible in the grid box?
+    const visibleCols = Math.max(1, Math.min(GRID_WIDTH, Math.floor(containerEl.clientWidth / chPx)));
+
+    // Center within the visible window (not the full 80 if it's clipped)
+    let x = Math.floor((visibleCols - asciiWidth.current) / 2);
+
+    if (!CENTER_ASCII) {
+      x = HORIZONTAL_PADDING;
     }
-    
-    // Place ASCII art in grid
+
+    // Apply padding and clamp to grid bounds
+    const minX = Math.max(0, HORIZONTAL_PADDING);
+    const maxX = Math.max(0, GRID_WIDTH - asciiWidth.current - HORIZONTAL_PADDING);
+    x = Math.max(minX, Math.min(x, maxX));
+
+    // Final safety clamp to grid
+    x = Math.max(0, Math.min(x, GRID_WIDTH - asciiWidth.current));
+    return x;
+  };
+
+  // Build background grid for a given startX
+  const createBackgroundGrid = (xStart) => {
+    const grid = Array(GRID_HEIGHT).fill(null).map(() => Array(GRID_WIDTH).fill(EMPTY_CHAR));
+    const startY = Math.floor((GRID_HEIGHT - DEMOS_ASCII.length) / 2);
+
     DEMOS_ASCII.forEach((line, y) => {
+      const trimmedLine = line.trimEnd();
       const gridY = startY + y;
-      if (gridY >= 0 && gridY < GRID_HEIGHT) {
-        const trimmedLine = line.trimEnd(); // Remove trailing spaces for proper centering
-        for (let x = 0; x < trimmedLine.length; x++) {
-          const gridX = startX + x;
-          if (gridX >= 0 && gridX < GRID_WIDTH) {
-            grid[gridY][gridX] = trimmedLine[x];
-          }
+      if (gridY < 0 || gridY >= GRID_HEIGHT) return;
+      for (let x = 0; x < trimmedLine.length; x++) {
+        const gridX = xStart + x;
+        if (gridX >= 0 && gridX < GRID_WIDTH) {
+          grid[gridY][gridX] = trimmedLine[x];
         }
       }
     });
-    
     return grid;
   };
 
-  // Find all letter positions in the background grid (not spaces or special chars)
+  // Find all letter positions
   const findLetterPositions = (grid) => {
-    const positions = [];
-    const letterRegex = /[a-zA-Z]/; // Only match actual letters 
-    
+    const arr = [];
+    const re = /[a-zA-Z]/;
     grid.forEach((row, y) => {
-      row.forEach((char, x) => {
-        if (letterRegex.test(char)) {
-          positions.push({ x, y, char });
-        }
-      });
+      row.forEach((ch, x) => { if (re.test(ch)) arr.push({ x, y, char: ch }); });
     });
-    
-    return positions;
+    return arr;
   };
 
-  // State management
-  const backgroundGrid = useRef(createBackgroundGrid());
-  const letterPositions = useRef(findLetterPositions(backgroundGrid.current));
+  // --- State that depends on startX/background ------------------------------
+  const [backgroundGrid, setBackgroundGrid] = useState(() => createBackgroundGrid(0));
+  const letterPositions = useRef(findLetterPositions(backgroundGrid));
+  useEffect(() => {
+    setBackgroundGrid(createBackgroundGrid(startX));
+  }, [startX]);
+  useEffect(() => {
+    letterPositions.current = findLetterPositions(backgroundGrid);
+  }, [backgroundGrid]);
+
+  // --- Measure & react to resize --------------------------------------------
+  useEffect(() => {
+    const el = gridRef.current;
+    if (!el) return;
+
+    const apply = () => setStartX(computeStartX(el));
+    apply();
+
+    const ro = new ResizeObserver(() => apply());
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // --- Animation state & logic (unchanged from your version) -----------------
   const [type1Chars, setType1Chars] = useState([]);
   const [type2Char, setType2Char] = useState(null);
   const [eatenCount, setEatenCount] = useState(0);
-  const tickRef = useRef(null);
-  
-  // 🔥 State for initial high-energy spawn period
   const [isInitialSpawnPeriod, setIsInitialSpawnPeriod] = useState(true);
   const initialSpawnTimeRef = useRef(Date.now());
+  const tickRef = useRef(null);
 
-  // Initialize Type 2 character at start
   useEffect(() => {
     const initialX = Math.floor(Math.random() * GRID_WIDTH);
     const initialY = Math.floor(Math.random() * GRID_HEIGHT);
-    setType2Char({
-      x: initialX,
-      y: initialY,
-      vx: Math.random() > 0.5 ? 1 : -1,
-      vy: 0,
-      lastMove: Date.now()
-    });
-    
-    // 🔥 Spawn initial burst of ghost characters
-    for (let i = 0; i < INITIAL_SPAWN_COUNT; i++) {
-      setTimeout(() => spawnType1(), i * 50); // Stagger spawns slightly for visual effect
-    }
-    
-    // 🔥 End initial spawn period after duration
-    const timer = setTimeout(() => {
-      setIsInitialSpawnPeriod(false);
-    }, INITIAL_SPAWN_DURATION);
-    
+    setType2Char({ x: initialX, y: initialY, vx: Math.random() > 0.5 ? 1 : -1, vy: 0, lastMove: Date.now() });
+
+    for (let i = 0; i < INITIAL_SPAWN_COUNT; i++) setTimeout(() => spawnType1(), i * 50);
+
+    const timer = setTimeout(() => setIsInitialSpawnPeriod(false), INITIAL_SPAWN_DURATION);
     return () => clearTimeout(timer);
   }, []);
 
-  // Generate random direction (horizontal or vertical only)
   const getRandomDirection = () => {
-    // 🕹️ Only cardinal directions - one axis at a time
-    const dirs = [
-      [1, 0],   // right
-      [-1, 0],  // left
-      [0, 1],   // down
-      [0, -1],  // up
-    ];
+    const dirs = [[1,0], [-1,0], [0,1], [0,-1]];
     return dirs[Math.floor(Math.random() * dirs.length)];
   };
+  const getPerpendicularDirection = (vx, vy) => (vx !== 0 ? [0, Math.random() > 0.5 ? 1 : -1] : [Math.random() > 0.5 ? 1 : -1, 0]);
 
-  // 🕹️ Get a perpendicular direction for zigzag movement
-  const getPerpendicularDirection = (vx, vy) => {
-    if (vx !== 0) {
-      // Currently moving horizontally, switch to vertical
-      return [0, Math.random() > 0.5 ? 1 : -1];
-    } else {
-      // Currently moving vertically, switch to horizontal
-      return [Math.random() > 0.5 ? 1 : -1, 0];
-    }
-  };
-
-  // Spawn new Type 1 character (ghost letter from "Demos" text)
   const spawnType1 = () => {
     if (type1Chars.length >= MAX_TYPE1_CHARS || letterPositions.current.length === 0) return;
-    
-    // Pick a random letter position from the "Demos" text
     const sourcePos = letterPositions.current[Math.floor(Math.random() * letterPositions.current.length)];
     const [vx, vy] = getRandomDirection();
-    
-    // 🎨 Randomly assign a color to the ghost
     const color = GHOST_COLORS[Math.floor(Math.random() * GHOST_COLORS.length)];
-    
-    // Create ghost character that copies the letter from source position
     setType1Chars(prev => [...prev, {
       id: Date.now() + Math.random(),
-      x: sourcePos.x,
-      y: sourcePos.y,
-      char: sourcePos.char, // Ghost copies the letter from its spawn position
-      color: color, // 🎨 Assigned color
-      vx, vy,
-      speed: 1 + Math.random() * 0.5, // Variable speed
-      velocityDecay: 0.95 + Math.random() * 0.04, // How fast it slows down
+      x: sourcePos.x, y: sourcePos.y, char: sourcePos.char,
+      color, vx, vy, speed: 1 + Math.random() * 0.5,
+      velocityDecay: 0.95 + Math.random() * 0.04,
       lastMove: Date.now(),
-      movesSinceDirectionChange: 0, // 🕹️ Track moves for zigzag behavior
-      movesBeforeDirectionChange: 2 + Math.floor(Math.random() * 3) // 🕹️ Change direction every 2-4 moves
+      movesSinceDirectionChange: 0,
+      movesBeforeDirectionChange: 2 + Math.floor(Math.random() * 3)
     }]);
   };
 
-  // Update character positions
   const updateCharacters = () => {
     const now = Date.now();
-
-    // Update Type 1 characters (ghost letters)
     setType1Chars(prev => prev.map(char => {
       const timeSinceMove = now - char.lastMove;
       const moveInterval = TICK_RATE / char.speed;
-      
       if (timeSinceMove < moveInterval) return char;
 
-      // Apply velocity decay
       const newSpeed = char.speed * char.velocityDecay;
-      
-      // Stop if too slow
-      if (newSpeed < 0.1) {
-        return { ...char, vx: 0, vy: 0, speed: 0 };
-      }
+      if (newSpeed < 0.1) return { ...char, vx: 0, vy: 0, speed: 0 };
 
-      // 🕹️ Check if it's time to change direction for zigzag movement
-      let newVx = char.vx;
-      let newVy = char.vy;
-      let movesSinceDirectionChange = char.movesSinceDirectionChange + 1;
-      let movesBeforeDirectionChange = char.movesBeforeDirectionChange;
-      
-      // Change direction after specified number of moves
-      if (movesSinceDirectionChange >= movesBeforeDirectionChange) {
-        // Switch to perpendicular direction
+      let newVx = char.vx, newVy = char.vy;
+      let movesSince = char.movesSinceDirectionChange + 1;
+      let movesBefore = char.movesBeforeDirectionChange;
+
+      if (movesSince >= movesBefore) {
         [newVx, newVy] = getPerpendicularDirection(char.vx, char.vy);
-        movesSinceDirectionChange = 0;
-        movesBeforeDirectionChange = 2 + Math.floor(Math.random() * 3); // Next change in 2-4 moves
+        movesSince = 0;
+        movesBefore = 2 + Math.floor(Math.random() * 3);
       }
 
-      // Calculate new position
       let newX = char.x + newVx;
       let newY = char.y + newVy;
 
-      // Bounce off walls and change direction
       if (newX < 0 || newX >= GRID_WIDTH) {
         newVx = -newVx;
         newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX));
-        // 🕹️ Switch to perpendicular movement on wall hit
         [newVx, newVy] = getPerpendicularDirection(newVx, newVy);
-        movesSinceDirectionChange = 0;
+        movesSince = 0;
       }
       if (newY < 0 || newY >= GRID_HEIGHT) {
         newVy = -newVy;
         newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY));
-        // 🕹️ Switch to perpendicular movement on wall hit
         [newVx, newVy] = getPerpendicularDirection(newVx, newVy);
-        movesSinceDirectionChange = 0;
+        movesSince = 0;
       }
 
-      return {
-        ...char,
-        x: newX,
-        y: newY,
-        vx: newVx,
-        vy: newVy,
-        speed: newSpeed,
-        lastMove: now,
-        movesSinceDirectionChange,
-        movesBeforeDirectionChange
-      };
+      return { ...char, x: newX, y: newY, vx: newVx, vy: newVy, speed: newSpeed, lastMove: now, movesSinceDirectionChange: movesSince, movesBeforeDirectionChange: movesBefore };
     }));
 
-    // Update Type 2 character (@ chaser)
     setType2Char(prev => {
       if (!prev) return null;
-      
       const timeSinceMove = now - prev.lastMove;
-      if (timeSinceMove < TICK_RATE * 0.5) return prev; // ⚡ Much faster - moves at 2x speed
+      if (timeSinceMove < TICK_RATE * 0.5) return prev;
 
-      // Find nearest Type 1 character
-      let target = null;
-      let minDist = Infinity;
-      
+      let target = null, minDist = Infinity;
       type1Chars.forEach(char => {
-        const dist = Math.abs(char.x - prev.x) + Math.abs(char.y - prev.y);
-        if (dist < minDist) {
-          minDist = dist;
-          target = char;
-        }
+        const d = Math.abs(char.x - prev.x) + Math.abs(char.y - prev.y);
+        if (d < minDist) { minDist = d; target = char; }
       });
 
-      let newX = prev.x;
-      let newY = prev.y;
-      let newVx = prev.vx;
-      let newVy = prev.vy;
-
+      let newX = prev.x, newY = prev.y, newVx = prev.vx, newVy = prev.vy;
       if (target) {
-        // Chase logic - move towards target
-        const dx = target.x - prev.x;
-        const dy = target.y - prev.y;
-        
-        // Prioritize the axis with greater distance
-        if (Math.abs(dx) > Math.abs(dy)) {
-          newVx = Math.sign(dx);
-          newVy = 0;
-        } else if (dy !== 0) {
-          newVx = 0;
-          newVy = Math.sign(dy);
-        }
-      } else {
-        // Random movement if no targets
-        if (Math.random() > 0.8) {
-          const [vx, vy] = getRandomDirection();
-          newVx = vx;
-          newVy = vy;
-        }
+        const dx = target.x - prev.x, dy = target.y - prev.y;
+        if (Math.abs(dx) > Math.abs(dy)) { newVx = Math.sign(dx); newVy = 0; }
+        else if (dy !== 0) { newVx = 0; newVy = Math.sign(dy); }
+      } else if (Math.random() > 0.8) {
+        [newVx, newVy] = getRandomDirection();
       }
 
-      // Move
-      newX += newVx;
-      newY += newVy;
-
-      // Keep in bounds
-      newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX));
-      newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY));
-
-      return {
-        ...prev,
-        x: newX,
-        y: newY,
-        vx: newVx,
-        vy: newVy,
-        lastMove: now
-      };
+      newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX + newVx));
+      newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY + newVy));
+      return { ...prev, x: newX, y: newY, vx: newVx, vy: newVy, lastMove: now };
     });
 
-    // Check for collisions (Type 2 eating Type 1)
     if (type2Char) {
       setType1Chars(prev => {
-        const remaining = prev.filter(char => 
-          !(char.x === type2Char.x && char.y === type2Char.y)
-        );
+        const remaining = prev.filter(c => !(c.x === type2Char.x && c.y === type2Char.y));
         const eaten = prev.length - remaining.length;
-        if (eaten > 0) {
-          setEatenCount(count => count + eaten);
-        }
+        if (eaten > 0) setEatenCount(cnt => cnt + eaten);
         return remaining;
       });
     }
 
-    // Randomly spawn new Type 1 characters (ghost letters)
-    // 🔥 Use higher spawn chance during initial period
-    const currentSpawnChance = isInitialSpawnPeriod ? INITIAL_SPAWN_CHANCE : TYPE1_SPAWN_CHANCE;
-    
-    // ⚡ Ensure at least one ghost is always visible
-    if (type1Chars.length === 0 || Math.random() < currentSpawnChance) {
-      spawnType1();
-    }
+    const spawnChance = isInitialSpawnPeriod ? INITIAL_SPAWN_CHANCE : TYPE1_SPAWN_CHANCE;
+    if (type1Chars.length === 0 || Math.random() < spawnChance) spawnType1();
   };
 
-  // Render grid with background and moving characters
   const renderGrid = () => {
-    // Start with background grid (copy it to avoid mutation)
-    const displayGrid = backgroundGrid.current.map(row => [...row]);
-    
-    // 🎨 Track colored characters and their positions for rendering
-    const coloredChars = new Map(); // key: "y-x", value: {char, color}
-    
-    // Overlay Type 1 characters (ghost letters) with their colors
+    const displayGrid = backgroundGrid.map(row => [...row]);
+    const colored = new Map();
+
     type1Chars.forEach(char => {
-      if (char.y >= 0 && char.y < GRID_HEIGHT && 
-          char.x >= 0 && char.x < GRID_WIDTH) {
-        displayGrid[char.y][char.x] = char.char; // Use the ghost's letter
-        coloredChars.set(`${char.y}-${char.x}`, {
-          char: char.char,
-          color: char.color
-        });
+      if (char.y >= 0 && char.y < GRID_HEIGHT && char.x >= 0 && char.x < GRID_WIDTH) {
+        displayGrid[char.y][char.x] = char.char;
+        colored.set(`${char.y}-${char.x}`, { char: char.char, color: char.color });
       }
     });
-    
-    // Overlay Type 2 character (@ symbol) - overwrites anything underneath
-    if (type2Char && 
-        type2Char.y >= 0 && type2Char.y < GRID_HEIGHT && 
-        type2Char.x >= 0 && type2Char.x < GRID_WIDTH) {
+
+    if (type2Char && type2Char.y >= 0 && type2Char.y < GRID_HEIGHT && type2Char.x >= 0 && type2Char.x < GRID_WIDTH) {
       displayGrid[type2Char.y][type2Char.x] = TYPE2_CHAR;
-      // 🎨 Mark chaser position for special styling
-      coloredChars.set(`${type2Char.y}-${type2Char.x}`, {
-        char: TYPE2_CHAR,
-        color: CHASER_COLOR,
-        fontWeight: CHASER_FONT_WEIGHT
-      });
+      colored.set(`${type2Char.y}-${type2Char.x}`, { char: TYPE2_CHAR, color: CHASER_COLOR, fontWeight: CHASER_FONT_WEIGHT });
     }
-    
-    // 🎨 Convert to JSX with colored spans
+
     return displayGrid.map((row, y) => {
-      const rowElements = [];
-      let currentText = '';
-      
+      const rowEls = [];
+      let buf = '';
       for (let x = 0; x < row.length; x++) {
         const key = `${y}-${x}`;
-        const coloredChar = coloredChars.get(key);
-        
-        if (coloredChar) {
-          // Push any accumulated plain text
-          if (currentText) {
-            rowElements.push(currentText);
-            currentText = '';
-          }
-          // Push colored character
-          rowElements.push(
-            <span 
-              key={key} 
-              style={{ 
-                color: coloredChar.color,
-                fontWeight: coloredChar.fontWeight || 'normal'
-              }}
-            >
-              {coloredChar.char}
+        const meta = colored.get(key);
+        if (meta) {
+          if (buf) { rowEls.push(buf); buf = ''; }
+          rowEls.push(
+            <span key={key} style={{ color: meta.color, fontWeight: meta.fontWeight || 'normal' }}>
+              {meta.char}
             </span>
           );
         } else {
-          // Accumulate plain text
-          currentText += row[x];
+          buf += row[x];
         }
       }
-      
-      // Push any remaining plain text
-      if (currentText) {
-        rowElements.push(currentText);
-      }
-      
-      return (
-        <div key={y} style={{ margin: 0, padding: 0, height: 'var(--line-height)' }}>
-          {rowElements}
-        </div>
-      );
+      if (buf) rowEls.push(buf);
+      return <div key={y} style={{ margin: 0, padding: 0, height: 'var(--line-height)' }}>{rowEls}</div>;
     });
   };
 
-  // Animation loop
   useEffect(() => {
     tickRef.current = setInterval(updateCharacters, 50);
-    
     return () => clearInterval(tickRef.current);
-  }, [type1Chars, type2Char, isInitialSpawnPeriod]);
+  }, [type1Chars, type2Char, isInitialSpawnPeriod, backgroundGrid]);
 
   return (
     <div className="ascii-banner" style={{ ...styles.container, justifyContent: 'center' }}>
-      <div style={styles.grid}>
+      <div ref={gridRef} style={styles.grid}>
         {SHOW_GRID && <div style={styles.debugOverlay} />}
         <div style={styles.content}>{renderGrid()}</div>
       </div>
