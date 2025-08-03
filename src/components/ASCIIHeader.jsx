@@ -95,6 +95,7 @@ const styles = {
 };
 
 const GridAnimation = () => {
+  // Determine viewport width for responsive container alignment
   // Initialize background grid with "Demos" ASCII art
   const createBackgroundGrid = () => {
     const grid = Array(GRID_HEIGHT).fill(null).map(() => Array(GRID_WIDTH).fill(EMPTY_CHAR));
@@ -108,15 +109,22 @@ const GridAnimation = () => {
 
     // Determine responsive horizontal padding (reduce on very small screens)
     const smallScreen = typeof window !== 'undefined' && window.innerWidth < 480;
-    const effectivePadding = smallScreen ? 2 : HORIZONTAL_PADDING;
+    const verySmallScreen = typeof window !== 'undefined' && window.innerWidth < 350;
+
+    // Responsive padding: 10ch default, 2ch below 480px, 0ch below 350px
+    const effectivePadding = verySmallScreen ? 0 : (smallScreen ? 2 : HORIZONTAL_PADDING);
     
     if (CENTER_ASCII) {
-      // Center the text horizontally with padding
-      startX = Math.floor((GRID_WIDTH - maxLineLength) / 2);
-      // Apply additional padding if specified
-      startX = Math.max(effectivePadding, startX);
+      if (verySmallScreen) {
+        // On very small screens, shift left more aggressively
+        // You can adjust this value - 0 puts it at the left edge, negative values would clip
+        startX = 4; // Or try 1 or 2 for slight padding
+      } else {
+        // Normal centering for larger screens
+        startX = Math.floor((GRID_WIDTH - maxLineLength) / 2);
+        startX = Math.max(effectivePadding, startX);
+      }
     } else {
-      // Just apply padding from the left
       startX = effectivePadding;
     }
     
@@ -481,7 +489,7 @@ const GridAnimation = () => {
   }, [type1Chars, type2Char, isInitialSpawnPeriod]);
 
   return (
-    <div className="ascii-banner" style={styles.container}>
+    <div className="ascii-banner" style={{ ...styles.container, justifyContent: 'center' }}>
       <div style={styles.grid}>
         {SHOW_GRID && <div style={styles.debugOverlay} />}
         <div style={styles.content}>{renderGrid()}</div>
