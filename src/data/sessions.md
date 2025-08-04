@@ -86,7 +86,6 @@ Demos enjoys the sun! Group discussion on raising your first round of money ensu
 - [Tejas](https://www.linkedin.com/in/tejasbhat94/) and [Steve](https://www.linkedin.com/in/steve-george-dublin/) demo'd 2x things they're cooking up!
   1. AI-powered assignment assistance for university lecturers
   2. [New news](https://www.watsthestory.ie/) - personalised news feed straight to your WhatsApp (optionally in the voice of Scarlett Johanson!)
-![Tejas demo](/images/sessions/session13-tejas.jpg)
 - [John](https://www.affixapi.com/) gave a run down on AI SWE Agents
 
 ## Session 12
