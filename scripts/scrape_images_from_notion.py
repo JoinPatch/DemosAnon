@@ -83,7 +83,7 @@ class BaseNotionImageScraper(ABC):
     def collect_images_by_session(html: str,
                                   min_session: Optional[int] = None,
                                   max_session: Optional[int] = None) -> Dict[int, List[str]]:
-        soup = BeautifulSoup(html, "lxml")
+        soup = BeautifulSoup(html)
         imgs: Dict[int, List[str]] = defaultdict(list)
         current_session: Optional[int] = None
 
@@ -117,6 +117,9 @@ class BaseNotionImageScraper(ABC):
             ensure_dir(out_dir)
             for i, url in enumerate(urls, start=1):
                 try:
+                    # prepend url with https://ethereal-society-312.notion.site/
+                    if not url.startswith("http"):
+                        url = urllib.parse.urljoin(self.notion_url, url)
                     r = http.get(url, timeout=REQUEST_TIMEOUT, stream=True)
                     r.raise_for_status()
                     ext = ext_from_url_or_headers(url, r)
@@ -306,8 +309,9 @@ class SeleniumNotionImageScraper(BaseNotionImageScraper):
             self.driver.get(self.notion_url)
             WebDriverWait(self.driver, 30).until(EC.presence_of_element_located((By.TAG_NAME, "body")))
             self._expand_all_toggles()
+            time.sleep(5) 
             self._slow_full_scroll()
-            time.sleep(1.2)  # settle lazy-loads
+            time.sleep(5)  # settle lazy-loads
             return self.driver.page_source
         finally:
             try:
