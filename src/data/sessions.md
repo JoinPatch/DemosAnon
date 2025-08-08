@@ -7,6 +7,11 @@ This file contains all Demos Anon sessions. To add a new session:
 4. For images: upload to `public/images/sessions/` and use `![alt text](/images/sessions/filename.jpg)`
 
 ---
+## Session 40 
+- [Ivan Nikolskiy](https://github.com/enty8080) demoed [SeaShell](https://github.com/EntySec/SeaShell), post-exploitation toolkit which lets you take complete remote control of iPhones on IOS 16! 
+- [Katalin Grecu](https://www.linkedin.com/in/katalin-grecu-8683431a8/) talked us through how he incorporates LLMs into his workflow as a Roblox dev, and showed us his latest game which has 20M plays in 2 weeks!
+- [Shiv Rajappa](https://www.linkedin.com/in/shivnarayanrajappa/) demoed a _comprehensive_ side project for using AI agents in narrative-driven investing and on-the-fly UIs.
+
 
 ## Session 29
 - [Brian Kelleher](https://briankelleher.ie/) showed us what maxing out Cursor and O1 looks like with a MicroDoc update and an in-house LLM-powered CRM to assist with sales.
