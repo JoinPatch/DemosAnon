@@ -46,17 +46,13 @@ const CHASER_FONT_WEIGHT = 'bold';
 const styles = {
   container: {
     fontFamily: '"JetBrains Mono", monospace',
-    backgroundColor: '#fff',
-    color: '#000',
+    backgroundColor: 'var(--background-color)',
+    color: 'var(--text-color)',
     display: 'flex',
     justifyContent: 'center',
     margin: 0,
-    padding: 0,
-    '@media (prefers-color-scheme: dark)': {
-      backgroundColor: '#000',
-      color: '#fff',
-    }
-  },
+    padding: 0
+  },  
   grid: {
     position: 'relative',
     width: `${GRID_WIDTH}ch`,
