@@ -1,7 +1,7 @@
 # DEMOS - ASCII Art with Monospace Grid
 
 A modern web implementation of ASCII art using a monospace grid system inspired by Oskar Wickström's "The Monospace Web".
-
+ 
 ## Features
 
 - **Monospace Grid System**: Every glyph sits flush inside an invisible 1ch × var(--line-height) grid
