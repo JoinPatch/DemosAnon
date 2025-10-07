@@ -7,6 +7,13 @@ This file contains all Demos Anon sessions. To add a new session:
 4. For images: upload to `public/images/sessions/` and use `![alt text](/images/sessions/filename.jpg)`
 
 ---
+## Session 41
+- [Conall Casey](https://www.linkedin.com/in/conall-casey-137426193/) from St.James Hospital's R&D Lab showed us some of the incredible & impactful work they're doing, with a focus around rapidly producing comfortable realistic prosthetics.
+- [Karl Gaff](https://www.linkedin.com/in/karl-gaff-692092109/) revealed his techniques in revealing hidden worlds through his [miscroscopy artwork](https://artofsciencephotography.com/photography.html).
+- [Lee Sherlock](https://www.linkedin.com/in/lee-sherlock/) talked us through how drug development works and showed how it can be made so much faster [with AI](https://meta-flux.com/).
+- [Vedh Kennan](https://www.linkedin.com/in/vedh-kannan-001b20225/) demoed his drug discovery pipeline research, highlighting why tech like Alphafold is such a big deal along the way
+
+
 ## Session 40 
 - [Ivan Nikolskiy](https://github.com/enty8080) demoed [SeaShell](https://github.com/EntySec/SeaShell), post-exploitation toolkit which lets you take complete remote control of iPhones on IOS 16! 
 - [Katalin Grecu](https://www.linkedin.com/in/katalin-grecu-8683431a8/) talked us through how he incorporates LLMs into his workflow as a Roblox dev, and showed us his latest game which has 20M plays in 2 weeks!
