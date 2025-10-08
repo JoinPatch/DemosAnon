@@ -7,6 +7,12 @@ This file contains all Demos Anon sessions. To add a new session:
 4. For images: upload to `public/images/sessions/` and use `![alt text](/images/sessions/filename.jpg)`
 
 ---
+## Session 44
+- [Eabha Murphy](https://www.linkedin.com/in/eabha-murphy/) demoed her work on a Matlab tool that she built for X-ray [femtochemistry](https://en.wikipedia.org/wiki/Femtochemistry) research at DESY, Germany's particle physics center.
+- [Alex O'Sullivan](https://www.linkedin.com/in/akosullivan/) presented his fully functioning, 43 Kwh powerbank powered by recycled vape batteries and with custom-designed & built PCB boards. No batteries were set on fire during the demo!
+- [Thomas Forbes](https://thomasforbes.com/) gave a live demo of his side project [confluent.email](http://confluent.email) -  a super-fast, sleek, and efficient email client inspired by Superhuman
+- This was also the first session ran by [Julian](https://www.julianlewandowski.com) & [Aditya](https://adityajoshi.cc)!
+
 ## Session 41
 - [Conall Casey](https://www.linkedin.com/in/conall-casey-137426193/) from St.James Hospital's R&D Lab showed us some of the incredible & impactful work they're doing, with a focus around rapidly producing comfortable realistic prosthetics.
 - [Karl Gaff](https://www.linkedin.com/in/karl-gaff-692092109/) revealed his techniques in revealing hidden worlds through his [miscroscopy artwork](https://artofsciencephotography.com/photography.html).
