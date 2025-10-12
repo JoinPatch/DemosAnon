@@ -9,14 +9,14 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
-## Session 44
+## Session 43
 
 - [Eabha Murphy](https://www.linkedin.com/in/eabha-murphy/) demoed her work on a Matlab tool that she built for X-ray [femtochemistry](https://en.wikipedia.org/wiki/Femtochemistry) research at DESY, Germany's particle physics center.
 - [Alex O'Sullivan](https://www.linkedin.com/in/akosullivan/) presented his fully functioning, 43 Kwh powerbank powered by recycled vape batteries and with custom-designed & built PCB boards. No batteries were set on fire during the demo!
 - [Thomas Forbes](https://thomasforbes.com/) gave a live demo of his side project [confluent.email](http://confluent.email) - a super-fast, sleek, and efficient email client inspired by Superhuman
 - This was also the first session ran by [Julian](https://www.julianlewandowski.com) & [Aditya](https://adityajoshi.cc)!
 
-## Session 43
+## Session 42
 
 - [Abi](https://www.linkedin.com/in/abi-o-brien-murray-b09574270/) and [Erica](https://www.linkedin.com/in/erica-o-brien-murray-49493a231/) demoed their sustainable hormone treatment that aims to combat Ash Dieback.
 - [Pavit](https://www.linkedin.com/in/pavit-gogia-8a276a265/) showcased his latest Roblox game, sharing insights on the analytics and engagement metrics developers use to optimise reach on the platform
