@@ -9,6 +9,12 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 44
+
+- [Jakub Janoska](https://www.linkedin.com/in/jakub-janoska-19a7b8313/) demoed some of the exploits he found while bug bounty hunting, showing off some ethical hacking in action!
+- [Dan Hughes](https://www.linkedin.com/in/dan-hughes-51117a178/) presented the tech behind FitSwitch, a discreet health tracker that attaches to your analog watch, allowing you to keep your style but continue tracking steps, bpm, calories, sleep etc. Dan discussed the challenges involved with putting together such compact hardware and extending battery life.
+- [Khawaish Gulati](https://www.linkedin.com/in/kkhawaish-gulati-050b511ab/) demoed her [FPGA](https://en.wikipedia.org/wiki/Field-programmable_gate_array) ([PYNQ](http://www.pynq.io/)) implementation of a breast cancer detection algorithm, aimed at comparing its performance against the CPU version & reducing scan times by two thirds.
+
 ## Session 43
 
 - [Eabha Murphy](https://www.linkedin.com/in/eabha-murphy/) demoed her work on a Matlab tool that she built for X-ray [femtochemistry](https://en.wikipedia.org/wiki/Femtochemistry) research at DESY, Germany's particle physics center.
