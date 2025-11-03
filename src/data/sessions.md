@@ -9,6 +9,12 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 45
+
+- [Charlie Headon](https://www.linkedin.com/in/charlie-headon-56ab03317/) demoed a concert quality guitar amplifier he built using all analog components, which is cheaper, smaller, and lighter than competitors currently on the market.
+- [Eric Xin](https://www.linkedin.com/in/ericxin123/) presented his work on Linkwave, a next-gen RFID sensing and analytics platform turning RFID hardware into a real-time intelligence system.
+- [Emmanuel Karibiye](https://www.linkedin.com/in/emmanuel-karibiye-509b9a1b3/) spoke about "Engineering a low-latency, multimodal AI calling platform where voice and live video merge".
+
 ## Session 44
 
 - [Eabha Murphy](https://www.linkedin.com/in/eabha-murphy/) demoed her work on a Matlab tool that she built for X-ray [femtochemistry](https://en.wikipedia.org/wiki/Femtochemistry) research at DESY, Germany's particle physics center.
