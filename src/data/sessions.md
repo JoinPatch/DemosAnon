@@ -12,7 +12,7 @@ This file contains all Demos Anon sessions. To add a new session:
 ## Session 46
 
 - [Will Carkner](https://willcarkner.com/) talked about building big H2 batteries and the associated material science, testing, and fun engineering challenges that come with pressure vessels.
-- [Lillie Li](https://www.linkedin.com/in/lillie-li-4a8267365/) and [Miles Chen](https://www.linkedin.com/in/miles-chen-347b04231/) demoed their work on using AI to identify potentially habitable exoplanets in the NASA database using a YOLO-based model to detect planetary dips.
+- [Lillie Li](https://www.linkedin.com/in/lillie-li-4a8267365/) and [Miles Bueno](https://www.linkedin.com/in/miles-bueno-0a8455368/) demoed their work on using AI to identify potentially habitable exoplanets in the NASA database using a YOLO-based model to detect planetary dips.
 - [Aditya Joshi](https://adityajoshi.cc/) and [Julian Lewandowski](https://www.julianlewandowski.com/) presented their work on [getarivo.com](http://getarivo.com), a voice-first productivity agent for driving, built using ElevenLabs. They also talked about their experiences of the [Patch SF Fellowship](https://www.joinpatch.org/sf-fellowship)!
 
 ## Session 45
