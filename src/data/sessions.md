@@ -9,6 +9,11 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 47
+
+- [Seán Fahey](https://www.linkedin.com/in/faheyse/) demoed the tech behind [Stegawave](https://stegawave.com), a watermarking as a service platform that encodes and watermarks content with CDN delivery and enables real-time takedowns of pirated streams.
+- [Evan Wynne](https://www.evanwynne.com/) talked about the future of prediction markets, why they've exploded in popularity, and demoed a low-latency copy trading tool for prediction markets.
+
 ## Session 46
 
 - [Will Carkner](https://willcarkner.com/) talked about building big H2 batteries and the associated material science, testing, and fun engineering challenges that come with pressure vessels.
