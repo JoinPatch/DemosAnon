@@ -18,7 +18,11 @@ jobs:
         with:
           node-version: 20
       - run: npm ci
-      - run: npm run build
+      - name: Build Astro site
+        env:
+          CI: true
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
