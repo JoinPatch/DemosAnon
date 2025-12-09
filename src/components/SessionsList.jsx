@@ -193,6 +193,80 @@ const SessionsList = ({ sessions = [] }) => {
           padding: 0 0.8ch;
           line-height: calc(var(--line-height) * 1.4);
         }
+
+        /* Modal styles */
+        .image-modal {
+          position: fixed;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 9999;
+          padding: var(--line-height);
+          animation: fadeIn 0.2s ease;
+          margin: 0;
+        }
+
+        @media (prefers-color-scheme: dark) {
+          .image-modal {
+            background: rgba(0, 0, 0, 0.3);
+          }
+        }
+
+        @media (prefers-color-scheme: light) {
+          .image-modal {
+            background: rgba(0, 0, 0, 0.3);
+          }
+        }
+
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+
+        .image-modal img {
+          max-width: 90vw;
+          max-height: 90vh;
+          width: auto;
+          height: auto;
+          object-fit: contain;
+          border: var(--border-thickness) solid var(--text-color);
+        }
+
+        .image-modal__close {
+          position: fixed;
+          top: calc(var(--line-height) * 2);
+          right: calc(var(--line-height) * 2);
+          width: calc(var(--line-height) * 2);
+          height: calc(var(--line-height) * 2);
+          background: var(--background-color);
+          color: var(--text-color);
+          border: var(--border-thickness) solid var(--text-color);
+          font-size: 1.5rem;
+          line-height: 1;
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 10000;
+        }
+
+        .image-modal__close:hover {
+          background: var(--background-color-alt);
+        }
+
+        .image-strip__item {
+          cursor: pointer;
+          transition: opacity 0.2s ease;
+        }
+
+        .image-strip__item:hover {
+          opacity: 0.8;
+        }
       `}</style>
 
       {visibleSessions.map((session) => {
@@ -241,6 +315,20 @@ export default SessionsList;
 const ImageStrip = ({ images }) => {
   const scrollerRef = useRef(null);
   const [hasOverflow, setHasOverflow] = useState(false);
+  const [modalImage, setModalImage] = useState(null);
+
+  // Handle modal open/close
+  const openModal = (src) => setModalImage(src);
+  const closeModal = () => setModalImage(null);
+
+  // Keyboard support for modal
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && modalImage) closeModal();
+    };
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [modalImage]);
 
   // Re-check overflow whenever size changes or images load
   useEffect(() => {
@@ -280,28 +368,58 @@ const ImageStrip = ({ images }) => {
   };
 
   return (
-    <div className="image-strip" style={{ '--strip-height': '9rem' }}>
-      {hasOverflow && (
-        <div className="image-strip__nav" aria-hidden="true">
-          <button className="image-strip__btn" onClick={() => scrollByAmount(-1)} aria-label="Scroll images left">
-            ◀
+    <>
+      <div className="image-strip" style={{ '--strip-height': '9rem' }}>
+        {hasOverflow && (
+          <div className="image-strip__nav" aria-hidden="true">
+            <button className="image-strip__btn" onClick={() => scrollByAmount(-1)} aria-label="Scroll images left">
+              ◀
+            </button>
+            <button className="image-strip__btn" onClick={() => scrollByAmount(1)} aria-label="Scroll images right">
+              ▶
+            </button>
+          </div>
+        )}
+        <div
+          className="image-strip__scroller"
+          ref={scrollerRef}
+          data-overflow={hasOverflow ? 'true' : 'false'}
+        >
+          {images.map((src, i) => (
+            <div 
+              className="image-strip__item" 
+              key={i}
+              onClick={() => openModal(src)}
+              style={{ cursor: 'pointer' }}
+            >
+              <img src={src} alt={`Session image ${i + 1}`} loading="lazy" />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Modal overlay */}
+      {modalImage && (
+        <div 
+          className="image-modal"
+          onClick={closeModal}
+          role="dialog"
+          aria-modal="true"
+        >
+          <button 
+            className="image-modal__close" 
+            onClick={closeModal}
+            aria-label="Close image"
+          >
+            ×
           </button>
-          <button className="image-strip__btn" onClick={() => scrollByAmount(1)} aria-label="Scroll images right">
-            ▶
-          </button>
+          <img 
+            src={modalImage} 
+            alt="Enlarged view"
+            onClick={(e) => e.stopPropagation()}
+          />
         </div>
       )}
-      <div
-        className="image-strip__scroller"
-        ref={scrollerRef}
-        data-overflow={hasOverflow ? 'true' : 'false'}
-      >
-        {images.map((src, i) => (
-          <div className="image-strip__item" key={i}>
-            <img src={src} alt={`Session image ${i + 1}`} loading="lazy" />
-          </div>
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
