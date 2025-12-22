@@ -9,6 +9,11 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 48
+- [Tomás Markey](https://tomasmarkey.org) talked about his direct air capture system PM-DAC and how he's building his own robotic angle-poise desk lamp using computer vision to always point the light where your hands are on a table.
+- [Abutalha Alam](https://abutalhaalam.com) demoed a bloomberg-like terminal built for tracking political accountability using open data.
+- [Ruairí McLoughlin](https://www.linkedin.com/in/ruairi-mcloughlin/) talked about how [Anaula](https://anaula.eco) builds photobioreactors that use light-driven cells to make low-cost biologic drugs like insulin at scale.
+
 ## Session 47
 
 - [Seán Fahey](https://www.linkedin.com/in/faheyse/) demoed the tech behind [Stegawave](https://stegawave.com), a watermarking as a service platform that encodes and watermarks content with CDN delivery and enables real-time takedowns of pirated streams.
