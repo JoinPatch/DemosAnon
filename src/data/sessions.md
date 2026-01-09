@@ -9,7 +9,14 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 49
+
+- [Seán Fahey](https://www.linkedin.com/in/faheyse/) talked about homomorphic encryption and how it can be used to verify data that still remains private.
+- [Seán O'Sullivan](https://www.linkedin.com/in/sean-osullivan-91733a267/) demoed a minute timer smaller than a one cent coin for swimmers and other athletes to pace themselves against, designed to mount inside their glasses.
+- [Dhruv](https://www.linkedin.com/in/dhrvrc/) and [Jake](https://www.linkedin.com/in/jake-casserly-654095207) talked about Formula Trinity's Autonomous division and the challenges they've faced in building a self-driving car.
+
 ## Session 48
+
 - [Tomás Markey](https://tomasmarkey.org) talked about his direct air capture system PM-DAC and how he's building his own robotic angle-poise desk lamp using computer vision to always point the light where your hands are on a table.
 - [Abutalha Alam](https://abutalhaalam.com) demoed a bloomberg-like terminal built for tracking political accountability using open data.
 - [Ruairí McLoughlin](https://www.linkedin.com/in/ruairi-mcloughlin/) talked about how [Anaula](https://anaula.eco) builds photobioreactors that use light-driven cells to make low-cost biologic drugs like insulin at scale.
