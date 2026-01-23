@@ -11,7 +11,7 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ## Session 50
 
-- This was our biggest session to date, with 65 people
+- This was our biggest session to date, with over 65 attendees! Our community has grown so much over the last 2.5 years - it was great to see so many faces at a single session to mark the occasion of the 50th edition of Demos Anon!
 - [Oisín Thomas](https://oisinthomas.com) talked about building AI benchmarks and tools for the Irish language
 - [Conall O'Reilly](https://conall-oreilly.eth.limo/) demo'd an image authentication system built on ethereum
 - [Neil Shevlin](https://neilshevlin.com) talked about his research on LLM ability to conduct novel research
