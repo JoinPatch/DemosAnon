@@ -9,6 +9,13 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 50
+
+- This was our biggest session to date, with 65 people
+- [Oisín Thomas](https://oisinthomas.com) talked about building AI benchmarks and tools for the Irish language
+- [Conall O'Reilly](https://conall-oreilly.eth.limo/) demo'd an image authentication system built on ethereum
+- [Neil Shevlin](https://neilshevlin.com) talked about his research on LLM ability to conduct novel research
+
 ## Session 49
 
 - [Seán Fahey](https://www.linkedin.com/in/faheyse/) talked about homomorphic encryption and how it can be used to verify data that still remains private.
