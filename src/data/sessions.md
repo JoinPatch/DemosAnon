@@ -15,9 +15,9 @@ This file contains all Demos Anon sessions. To add a new session:
 - [Bastien Saidi](https://www.linkedin.com/in/bastien-saidi/) talked about typed dataflow graphs generating deterministic code
 
 ## Session 52
-- [Eoin Delaney](https://www.linkedin.com/in/eoin-delaney-1355a0307/) will talk about his research on algorithmic fairness, aimed at measuring and mitigating bias against demographic subgroups in AI systems
-- [Eniola Olumeyan](https://www.linkedin.com/in/eniolabo/) will talk about building RL agents with game theory techniques to find optimal strategies in gamified environments
-- [Brian Kelleher](https://www.linkedin.com/in/briankelleher0/) will talk about how to write software with an army of autonomous agents
+- [Eoin Delaney](https://www.linkedin.com/in/eoin-delaney-1355a0307/) talked about his research on algorithmic fairness, aimed at measuring and mitigating bias against demographic subgroups in AI systems
+- [Eniola Olumeyan](https://www.linkedin.com/in/eniolabo/) talked about building RL agents with game theory techniques to find optimal strategies in gamified environments
+- [Brian Kelleher](https://www.linkedin.com/in/briankelleher0/) talked about how to write software with an army of autonomous agents
 
 ## Session 51
 - [Alex O'Sullivan](https://www.linkedin.com/in/akosullivan/) talked about a low cost homelab setup of various apps, services, and FOSS self-hosted on upcycled enterprise hardware from ~15 years ago
