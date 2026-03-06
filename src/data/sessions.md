@@ -9,6 +9,12 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 53
+- 
+- [Daniel Kaminski](https://kaminski.ie/) talked about methods of toolpath generation in 3d printing
+- [Owais Korejo](https://www.linkedin.com/in/owais-korejo-a41798229/) demo'd [groooves.app](https://groooves.app), a letterbox/imdb style app for music reviews
+- [Bastien Saidi](https://www.linkedin.com/in/bastien-saidi/) talked about typed dataflow graphs generating deterministic code
+
 ## Session 52
 - [Eoin Delaney](https://www.linkedin.com/in/eoin-delaney-1355a0307/) will talk about his research on algorithmic fairness, aimed at measuring and mitigating bias against demographic subgroups in AI systems
 - [Eniola Olumeyan](https://www.linkedin.com/in/eniolabo/) will talk about building RL agents with game theory techniques to find optimal strategies in gamified environments
