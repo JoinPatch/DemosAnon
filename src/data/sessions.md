@@ -9,6 +9,11 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 54
+- [Mike Ryan](https://www.linkedin.com/in/mike-ryan-tcd/) talked about the tech behind Neurosonic - a tool for the rapid assessment of stroke risk
+- [Mario Fabelo](https://www.mariofabelo.com/) talked about how he built the first classification for the coldest exoplanets using the mid-infrared wavelength range with data from the James Webb Space Telescope
+- [James Flynn](https://www.linkedin.com/in/jamesflynncm/) talked about building agents for social media campaign & content generation, and how to combat the creation of "AI Slop" content
+
 ## Session 53
 - [Daniel Kaminski](https://kaminski.ie/) talked about methods of toolpath generation in 3d printing
 - [Owais Korejo](https://www.linkedin.com/in/owais-korejo-a41798229/) demo'd [groooves.app](https://groooves.app), a letterbox/imdb style app for music reviews
