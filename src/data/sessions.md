@@ -9,6 +9,22 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 57
+- [Bjarte Sunde](https://www.linkedin.com/in/bjarte-sunde/) talked about his work at Bumblebee Spaces in SF (robotic furniture that stores itself in your ceiling!), alongside a demo of [speaking.app](http://speaking.app) - an AI coach that analyzes your speech and delivery to help you sound more confident in interviews, presentations, and pitches
+- [Samir Bioud](https://kronsy.dev/) talked about how building [Induct](https://getinduct.com/) hardware taught him, the hard way, that the real world is messy, connectivity is cursed, and reliable systems have to be built around failure rather than assuming it away
+- [Bence Redmond](https://www.linkedin.com/in/bence-redmond/) and [Ryan Morrissey](https://www.linkedin.com/in/ryan-morrissey-834256271/) showed off what they've been working on with Blueprints, and also showcased [CarbonCopy](https://www.carboncopy.inc/)
+
+## Session 56
+- [Tim Farrelly](https://www.timfarrelly.com/) talked about automated evals and auditing for AIs interacting with mentally vulnerable users
+- [Keith Ahern](https://www.linkedin.com/in/keith-ahern/) talked about the chip design process, drawing on his experience working in the industry
+- Ostap Badyuk talked about how [Dubsof](https://dubsof.com/) started using Nix for their backend, and why they believe it's the future for LLM-controlled deployment
+
+## Session 55
+- [Will Carkner](https://willcarkner.com/) and [Johnny Doyle](https://www.linkedin.com/in/johnny-doyle-69022718a/) talked about [Syncra](https://syncra.ie/) - how they're developing custom hardware for power strips that produce energy usage insights for offices
+- [Rathe Hollingum](https://www.linkedin.com/in/rathe-hollingum-970b081/) and [Adam Hanking](https://www.linkedin.com/in/adamhankingtmspecialist/) demo'd the tech behind [Gemell](https://gemell.io/) - a platform that procedurally generates photorealistic digital twins of textiles directly from production data & CAD files
+- [Leon Coleman](https://www.linkedin.com/in/leon-coleman-303529241/) and [Charlie Headon](https://www.linkedin.com/in/charlie-headon-56ab03317/) talked about how [NexaSense](https://www.nexasense.ie/) uses in-room radar and edge-ML to detect falls and long-lies in care homes
+- This session was sponsored by [Akash Bajwa](https://www.linkedin.com/in/akashbajwa/), principal at Earlybird VC
+
 ## Session 54
 - [Mike Ryan](https://www.linkedin.com/in/mike-ryan-tcd/) talked about the tech behind Neurosonic - a tool for the rapid assessment of stroke risk
 - [Mario Fabelo](https://www.mariofabelo.com/) talked about how he built the first classification for the coldest exoplanets using the mid-infrared wavelength range with data from the James Webb Space Telescope
