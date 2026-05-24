@@ -9,38 +9,51 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 58
+
+- [Darren Maher](https://www.linkedin.com/in/darrenmaher22/) will showcase his work predicting hidden biological signal in drug screens using disease-level models (moved from previous session)
+- [Will Donnelly](https://www.linkedin.com/in/will-myles-donnelly/) will showcase 'Refresh' - a Chrome extension which lets you customise your YouTube algorithm to show more useful content
+- [Advik Bahadur](https://www.linkedin.com/in/advik-bahadur/) will showcase HackEurope Stockholm-winning AegisAI - a privacy interceptor designed to keep your prompt secrets and personal information hidden from cloud AIs
+
 ## Session 57
+
 - [Bjarte Sunde](https://www.linkedin.com/in/bjarte-sunde/) talked about his work at Bumblebee Spaces in SF (robotic furniture that stores itself in your ceiling!), alongside a demo of [speaking.app](http://speaking.app) - an AI coach that analyzes your speech and delivery to help you sound more confident in interviews, presentations, and pitches
 - [Samir Bioud](https://kronsy.dev/) talked about how building [Induct](https://getinduct.com/) hardware taught him, the hard way, that the real world is messy, connectivity is cursed, and reliable systems have to be built around failure rather than assuming it away
 - [Bence Redmond](https://www.linkedin.com/in/bence-redmond/) and [Ryan Morrissey](https://www.linkedin.com/in/ryan-morrissey-834256271/) showed off what they've been working on with Blueprints, and also showcased [CarbonCopy](https://www.carboncopy.inc/)
 
 ## Session 56
+
 - [Tim Farrelly](https://www.timfarrelly.com/) talked about automated evals and auditing for AIs interacting with mentally vulnerable users
 - [Keith Ahern](https://www.linkedin.com/in/keith-ahern/) talked about the chip design process, drawing on his experience working in the industry
 - Ostap Badyuk talked about how [Dubsof](https://dubsof.com/) started using Nix for their backend, and why they believe it's the future for LLM-controlled deployment
 
 ## Session 55
+
 - [Will Carkner](https://willcarkner.com/) and [Johnny Doyle](https://www.linkedin.com/in/johnny-doyle-69022718a/) talked about [Syncra](https://syncra.ie/) - how they're developing custom hardware for power strips that produce energy usage insights for offices
 - [Rathe Hollingum](https://www.linkedin.com/in/rathe-hollingum-970b081/) and [Adam Hanking](https://www.linkedin.com/in/adamhankingtmspecialist/) demo'd the tech behind [Gemell](https://gemell.io/) - a platform that procedurally generates photorealistic digital twins of textiles directly from production data & CAD files
 - [Leon Coleman](https://www.linkedin.com/in/leon-coleman-303529241/) and [Charlie Headon](https://www.linkedin.com/in/charlie-headon-56ab03317/) talked about how [NexaSense](https://www.nexasense.ie/) uses in-room radar and edge-ML to detect falls and long-lies in care homes
 - This session was sponsored by [Akash Bajwa](https://www.linkedin.com/in/akashbajwa/), principal at Earlybird VC
 
 ## Session 54
+
 - [Mike Ryan](https://www.linkedin.com/in/mike-ryan-tcd/) talked about the tech behind Neurosonic - a tool for the rapid assessment of stroke risk
 - [Mario Fabelo](https://www.mariofabelo.com/) talked about how he built the first classification for the coldest exoplanets using the mid-infrared wavelength range with data from the James Webb Space Telescope
 - [James Flynn](https://www.linkedin.com/in/jamesflynncm/) talked about building agents for social media campaign & content generation, and how to combat the creation of "AI Slop" content
 
 ## Session 53
+
 - [Daniel Kaminski](https://kaminski.ie/) talked about methods of toolpath generation in 3d printing
 - [Owais Korejo](https://www.linkedin.com/in/owais-korejo-a41798229/) demo'd [groooves.app](https://groooves.app), a letterbox/imdb style app for music reviews
 - [Bastien Saidi](https://www.linkedin.com/in/bastien-saidi/) talked about typed dataflow graphs generating deterministic code
 
 ## Session 52
+
 - [Eoin Delaney](https://www.linkedin.com/in/eoin-delaney-1355a0307/) talked about his research on algorithmic fairness, aimed at measuring and mitigating bias against demographic subgroups in AI systems
 - [Eniola Olumeyan](https://www.linkedin.com/in/eniolabo/) talked about building RL agents with game theory techniques to find optimal strategies in gamified environments
 - [Brian Kelleher](https://www.linkedin.com/in/briankelleher0/) talked about how to write software with an army of autonomous agents
 
 ## Session 51
+
 - [Alex O'Sullivan](https://www.linkedin.com/in/akosullivan/) talked about a low cost homelab setup of various apps, services, and FOSS self-hosted on upcycled enterprise hardware from ~15 years ago
 - [David McSharry](https://www.linkedin.com/in/david-mcsharry-208612202/) demo'd a tool that matches written statements to prediction markets
 - [Alejandro Rangel](https://www.linkedin.com/in/alejandro-rangel1/) showcased the computer brain interface he's been working on
