@@ -11,7 +11,7 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ## Session 58
 
-- [Darren Maher](https://www.linkedin.com/in/darrenmaher22/) will showcase his work predicting hidden biological signal in drug screens using disease-level models (moved from previous session)
+- [Darren Maher](https://www.linkedin.com/in/darrenmaher22/) will showcase his work predicting hidden biological signal in drug screens using disease-level models
 - [Will Donnelly](https://www.linkedin.com/in/will-myles-donnelly/) will showcase 'Refresh' - a Chrome extension which lets you customise your YouTube algorithm to show more useful content
 - [Advik Bahadur](https://www.linkedin.com/in/advik-bahadur/) will showcase HackEurope Stockholm-winning AegisAI - a privacy interceptor designed to keep your prompt secrets and personal information hidden from cloud AIs
 
