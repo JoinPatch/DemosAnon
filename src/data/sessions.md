@@ -9,11 +9,17 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 59
+
+- [Katelyn Davis](https://www.linkedin.com/in/katelyn-davis-73780620b/) demo'd [Reel Museum](https://reelmuseum.com/), a Pinterest-style feed for museum textile collections, and talk about how historians are using APIs, metadata and archival datasets in GLAM (Galleries, Libraries, Archives and Museums) institutions.
+- [Andrei Florian](https://www.linkedin.com/in/andrei-florian/) presented his research on data-efficient paradigms for extending LLMs to low-resource languages.
+- [Diarmuid Brady](https://www.linkedin.com/in/diarmuidbrady/) demo'd 'Randoro', a shadow boxing timer that plays random cues during interval workouts to test reactions when training solo.
+
 ## Session 58
 
-- [Darren Maher](https://www.linkedin.com/in/darrenmaher22/) will showcase his work predicting hidden biological signal in drug screens using disease-level models
-- [Will Donnelly](https://www.linkedin.com/in/will-myles-donnelly/) will showcase 'Refresh' - a Chrome extension which lets you customise your YouTube algorithm to show more useful content
-- [Advik Bahadur](https://www.linkedin.com/in/advik-bahadur/) will showcase HackEurope Stockholm-winning AegisAI - a privacy interceptor designed to keep your prompt secrets and personal information hidden from cloud AIs
+- [Darren Maher](https://www.linkedin.com/in/darrenmaher22/) presented his work predicting hidden biological signal in drug screens using disease-level models
+- [Will Donnelly](https://www.linkedin.com/in/will-myles-donnelly/) demo'd 'Refresh' - a Chrome extension which lets you customise your YouTube algorithm to show more useful content
+- [Advik Bahadur](https://www.linkedin.com/in/advik-bahadur/) demo'd HackEurope Stockholm-winning AegisAI - a privacy interceptor designed to keep your prompt secrets and personal information hidden from cloud AIs
 
 ## Session 57
 
