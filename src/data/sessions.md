@@ -9,6 +9,12 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 60
+
+- [Alex O'Sullivan](https://www.linkedin.com/in/akosullivan/) gave a run down of high powered rocketry in Ireland with some suspiciously real looking rockets.
+- [Zack Musumeci](https://www.linkedin.com/in/zack-musumeci-a97611108) demoed a pipeline for identifying candidate chemicals suitable for commercial synthetic biology.
+- [Tim Farrelly](https://timfarrelly.com) discussed how artefacts in the training data can cause models to go evil and some potential mitigations.
+
 ## Session 59
 
 - [Katelyn Davis](https://www.linkedin.com/in/katelyn-davis-73780620b/) demo'd [Reel Museum](https://reelmuseum.com/), a Pinterest-style feed for museum textile collections, and talk about how historians are using APIs, metadata and archival datasets in GLAM (Galleries, Libraries, Archives and Museums) institutions.
