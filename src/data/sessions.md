@@ -9,6 +9,31 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 64
+
+- [Marvellous Adedapo](https://www.linkedin.com/in/marvellous-adedapo/) and [Emmanuel James](https://www.linkedin.com/in/emmanuel-james-7a1853248/) demoed [RetailGuard](https://myretailguard.com/), an intelligence layer of a POS system. While taking you through their journey on how they got there.
+- [Owais Korejo](https://www.linkedin.com/in/owais-korejo-a41798229/) demoed [Grooves](https://joingrooves.app/), which is Letterboxd/Goodreads for music.
+- [Sean Barrett](https://www.linkedin.com/in/sean-barrett-61461a162/) demoed his work at [ReAble Labs](https://reablelabs.ie/) and making prosthetics more accessible.
+- [Alejo Cain](https://www.linkedin.com/in/alejo-cain-01310a86/) demoed his company [SnappyCompliance](https://snappycompliance.com/), which helps robotics companies stay certified and conformant (and some of the robots he's worked on)
+
+## Session 63
+
+- [Tianmin Zhang](https://www.linkedin.com/in/tianmin-zhang-043aa5291/) demoed how to build a workflow assistant from structured SOP logic.
+- [Moaz Refaei](https://www.linkedin.com/in/moaz-refaei/), [Kelvin Gao](https://www.linkedin.com/in/kelvin-gao-a3883a34b/), [James Blackburn](https://www.linkedin.com/in/james-blackburn-864b6124b/) and [Lucca Browning](https://www.linkedin.com/in/lucca-browning-058922303/) showcased Ireland's only student-built autonomous humanitarian drone, which placed 3rd out of 50 international teams at the 2026 UAS Challenge in its debut year.
+- [Chinaza Uzoukwu](https://www.linkedin.com/in/chinaza-uzoukwu-a33219228/) talked about why you should rewrite your favourite apps (with Claude).
+
+## Session 62
+
+- [James Harcourt](https://www.linkedin.com/in/james-harcourt-3131473ab) demoed a standalone blood glucose alert device built to improve safety for insulin dependent diabetics
+- [Mark Doyle](https://www.linkedin.com/in/mark--doyle/) talked about Minions, Stripe's internal agent framework.
+- [Alex Gorovenko](https://www.linkedin.com/in/alexander-gorovenko/) talked about how he makes hardware projects, covering PCB design, electronics, and homegrown firmware (he also has a [channel](https://www.youtube.com/watch?v=dBEupkQBFis)).
+
+## Session 61
+
+- [Jeremy Browne](https://www.linkedin.com/in/jeremybrowne42/), [Seán O'Connor](https://www.linkedin.com/in/sean-o-connor-578839304/) and [Sarah Flynn](https://www.linkedin.com/in/sarah-flynn-6192a5334/), from Tfwind, presented on how they raised 50k for Ireland's first renewable energy student team and what they are doing with it.
+- [Shiv Rajappa](https://www.linkedin.com/in/shivnarayanrajappa/) demoed Reportly, which turns knowledge sources you curate into a searchable, compounding knowledge base.
+- [Pavit Gogia](https://www.linkedin.com/in/pavit-gogia-8a276a265/) demoed on how to build better cities.
+
 ## Session 60
 
 - [Alex O'Sullivan](https://www.linkedin.com/in/akosullivan/) gave a run down of high powered rocketry in Ireland with some suspiciously real looking rockets.
