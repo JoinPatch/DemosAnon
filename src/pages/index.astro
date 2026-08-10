@@ -12,7 +12,8 @@ console.log(sessionsMarkdown);
 const sessions = parseSessionsMarkdown(sessionsMarkdown) as Array<{
   number: number;
   title?: string;
-  content: string;
+  html: string;
+  text: string;
 }>;
 
 // console.log('Raw markdown:', sessionsMarkdown);

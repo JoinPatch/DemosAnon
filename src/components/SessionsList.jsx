@@ -1,13 +1,72 @@
 // src/components/SessionsList.jsx
 import React, { useMemo, useRef, useState, useEffect } from 'react';
 
+// Escapes the reader's own search terms before they go into a RegExp, so typing
+// "C++" or "(preview)" searches for those characters instead of blowing up.
+const escapeRegex = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+// Session body, rendered from the HTML `marked` produced at build time.
+// Search terms are wrapped in <mark> by walking the rendered text nodes rather
+// than by rewriting the HTML string — a regex over markup would happily match
+// inside href="" and tag names.
+const SessionBody = ({ html, terms }) => {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const root = ref.current;
+    if (!root || !terms.length) return;
+
+    const rx = new RegExp(`(${terms.map(escapeRegex).join('|')})`, 'ig');
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    for (const node of textNodes) {
+      // split() with a capture group leaves the matches at the odd indices
+      const parts = node.nodeValue.split(rx);
+      if (parts.length < 2) continue;
+
+      const frag = document.createDocumentFragment();
+      parts.forEach((part, i) => {
+        if (!part) return;
+        if (i % 2 === 1) {
+          const mark = document.createElement('mark');
+          mark.textContent = part;
+          frag.appendChild(mark);
+        } else {
+          frag.appendChild(document.createTextNode(part));
+        }
+      });
+      node.parentNode.replaceChild(frag, node);
+    }
+  }, [html, terms]);
+
+  return <div ref={ref} dangerouslySetInnerHTML={{ __html: html }} />;
+};
+
 const SessionsList = ({ sessions = [] }) => {
   const INITIAL_SESSIONS = 6;
   const LOAD_MORE_COUNT = 6;
   const [displayCount, setDisplayCount] = useState(INITIAL_SESSIONS);
+  const [query, setQuery] = useState('');
 
-  const visibleSessions = sessions.slice(0, displayCount);
-  const hasMore = displayCount < sessions.length;
+  // Terms are ANDed: "drone trinity" only matches sessions containing both.
+  const terms = useMemo(
+    () => query.toLowerCase().split(/\s+/).filter(Boolean),
+    [query]
+  );
+  const searching = terms.length > 0;
+
+  const matchingSessions = useMemo(() => {
+    if (!searching) return sessions;
+    return sessions.filter((session) => {
+      const hay = `session ${session.number} ${session.title || ''} ${session.text}`.toLowerCase();
+      return terms.every((t) => hay.includes(t));
+    });
+  }, [sessions, terms, searching]);
+
+  const visibleSessions = searching ? matchingSessions : sessions.slice(0, displayCount);
+  const hasMore = !searching && displayCount < sessions.length;
   const remainingCount = sessions.length - displayCount;
 
   const loadMore = () => {
@@ -42,83 +101,29 @@ const SessionsList = ({ sessions = [] }) => {
   }, []);
   // ---------------------------------------------------------------------------
 
-  // Helper: parse a line with markdown links [text](url) into JSX parts
-  const parseInlineLinks = (text, keyPrefix) => {
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    const parts = [];
-    let lastIndex = 0;
-    let match;
-    while ((match = linkRegex.exec(text)) !== null) {
-      if (match.index > lastIndex) {
-        parts.push(text.substring(lastIndex, match.index));
-      }
-      parts.push(
-        <a
-          key={`${keyPrefix}-link-${match.index}`}
-          href={match[2]}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          {match[1]}
-        </a>
-      );
-      lastIndex = match.index + match[0].length;
-    }
-    if (lastIndex < text.length) parts.push(text.substring(lastIndex));
-    return parts.length ? parts : text;
-  };
-
-  // Render content as paragraphs and real <ul><li> lists
-  const renderContent = (content) => {
-    if (!content) return null;
-
-    const lines = content.split('\n');
-    const blocks = [];
-    let currentList = [];
-
-    const flushList = (flushKey) => {
-      if (currentList.length) {
-        blocks.push(
-          <ul key={`ul-${flushKey}`} className="session-list">
-            {currentList.map((li, i) => (
-              <li key={`li-${flushKey}-${i}`}>{li}</li>
-            ))}
-          </ul>
-        );
-        currentList = [];
-      }
-    };
-
-    lines.forEach((rawLine, idx) => {
-      const line = rawLine.trim();
-      if (!line) return;
-
-      // Accept either "• " (parser output) or "- " / "* " (fallback)
-      const bulletMatch = line.match(/^(?:• |- |\* )(.*)$/);
-      if (bulletMatch) {
-        currentList.push(parseInlineLinks(bulletMatch[1], `line-${idx}`));
-        return;
-      }
-
-      flushList(idx);
-      blocks.push(<p key={`p-${idx}`}>{parseInlineLinks(line, `p-${idx}`)}</p>);
-    });
-
-    flushList('last');
-    return blocks;
-  };
-
   return (
     <>
       <style>{`
-        /* Lists inside the session content */
-        .session-content ul.session-list {
+        /* Filter box */
+        .session-search {
+          width: 100%;
+          margin: var(--line-height) 0;
+        }
+        .session-search::placeholder { color: var(--text-color-alt); }
+        .session-search__empty { color: var(--text-color-alt); }
+        .session-content mark {
+          background: color-mix(in srgb, var(--text-color) 30%, var(--background-color) 70%);
+          color: var(--text-color);
+        }
+
+        /* Lists inside the session content (emitted by marked) */
+        .session-content ul {
           list-style: disc;
           list-style-position: outside;
           padding-left: 2ch;
           margin: var(--line-height) 0;
         }
-        .session-content ul.session-list li { margin-bottom: 0.5em; }
+        .session-content ul li { margin-bottom: 0.5em; }
 
         /* Load-more row behaves like a header, without the marker */
         details.session-item.load-more summary {
@@ -269,17 +274,37 @@ const SessionsList = ({ sessions = [] }) => {
         }
       `}</style>
 
+      <input
+        className="session-search"
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        onKeyDown={(e) => { if (e.key === 'Escape') setQuery(''); }}
+        placeholder="Search"
+        aria-label="Search demos"
+      />
+
+      {searching && matchingSessions.length === 0 && (
+        <p className="session-search__empty">No demos match “{query}”.</p>
+      )}
+
       {visibleSessions.map((session) => {
         const imgs = imagesBySession[session.number] || [];
         return (
-          <details key={session.number} className="session-item">
+          // Keying on the query remounts on every keystroke, which resets the
+          // HTML the highlighter mutated and keeps `open` in step with the mode.
+          <details
+            key={`${session.number}${searching ? `-${query}` : ''}`}
+            className="session-item"
+            open={searching || undefined}
+          >
             <summary>
               Session {session.number}
               {session.title && session.title !== `Session ${session.number}` ? `: ${session.title}` : ''}
             </summary>
 
             <div className="session-content">
-              {renderContent(session.content)}
+              <SessionBody html={session.html} terms={terms} />
               {imgs.length > 0 && <ImageStrip images={imgs} />}
             </div>
           </details>
