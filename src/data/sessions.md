@@ -21,6 +21,18 @@ This file contains all Demos Anon sessions. To add a new session:
 - [Darragh Evanson](https://www.linkedin.com/in/darraghevanson/) and [Elias Mocik](https://www.linkedin.com/in/elias-mocik/) presented their research proposal on improving the efficiency of the Irish national grid by reallocating dispatch down while ensuring equity among power generators.
 - [Pavit Gogia](https://www.linkedin.com/in/pavit-gogia-8a276a265/) talked about what it really takes to build infrastructure in the UK & Ireland.
 
+## Session 66
+
+- [Srinidhi Karthik](https://www.linkedin.com/in/srinidhikarthik/), [Sarah Hurley](https://www.linkedin.com/in/sarah-hurley-534938262/) and [Dana Carney](https://www.linkedin.com/in/dana-carney-9b9272299/) demoed a tool that uses existing data to help predict urban sprawl in Galway City.
+- [Roshan Chaudhari](https://www.linkedin.com/in/roshan-chaudhari-6180a134a/), [Shaurya Kapoor](https://www.linkedin.com/in/shauryakap/) and [Kaisin Manning](https://www.linkedin.com/in/kaisin-manning/) demoed EirSpace, Ireland's first inter-varsity student rocketry team, showcasing high-powered rocketry through parachute systems, avionics and physical rockets.
+- [Jake Casserly](https://www.linkedin.com/in/jake-casserly-654095207/) and [Dhruv Ranajit Choudhury](https://www.linkedin.com/in/dhrvrc/) demoed autonomous driving - 10 laps in under 10 minutes at Silverstone!
+
+## Session 65
+
+- [Jay Looney](https://www.linkedin.com/in/jay-looney-513042263/) demoed Ireland's first additively manufactured liquid rocket engine with [ULAS HiPR](https://www.ulas-hipr.ie/).
+- [Conall O'Reilly](https://www.linkedin.com/in/conall-o%E2%80%99reilly-579a89346/) explained how [Ethereum](https://ethereum.org/) works, and how he worked on improving it during Patch.
+- [Paula Brüdrich](https://www.linkedin.com/in/paula-br%C3%BCdrich-722410331/) and [Colm Rea](https://www.linkedin.com/in/colm-rea-5bb8353b9/) presented their project on vision-integrated robotic welding for SMEs.
+
 ## Session 64
 
 - [Marvellous Adedapo](https://www.linkedin.com/in/marvellous-adedapo/) and [Emmanuel James](https://www.linkedin.com/in/emmanuel-james-7a1853248/) demoed [RetailGuard](https://myretailguard.com/), an intelligence layer of a POS system. While taking you through their journey on how they got there.
