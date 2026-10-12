@@ -9,6 +9,18 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 68 - Dublin AI Week
+
+- [Saif Rehman](https://www.linkedin.com/in/saif-ur-rehman/) demoed [AgentFM](https://agentfm.net/), an open-source project that turns machines you already own into a cluster for containerised AI agents.
+- [Iniya Baskaran](https://www.linkedin.com/in/iniya-baskaran-142988297/) demoed Gymento, her AI powered gym app.
+- [Tashfeen Ahmed](https://tashfeen.me/#about) demoed [FreeLLMAPI](https://freellmapi.co/), an open-source router that aggregates free LLMs under an OpenAI-compatible API.
+
+## Session 67
+
+- [Ryan Morrissey](https://www.linkedin.com/in/ryan-morrissey-834256271/) and [Bence Redmond](https://www.linkedin.com/in/bence-redmond/) demoed how they deploy a swarm of coding agents on the cloud.
+- [Darragh Evanson](https://www.linkedin.com/in/darraghevanson/) and [Elias Mocik](https://www.linkedin.com/in/elias-mocik/) presented their research proposal on improving the efficiency of the Irish national grid by reallocating dispatch down while ensuring equity among power generators.
+- [Pavit Gogia](https://www.linkedin.com/in/pavit-gogia-8a276a265/) talked about what it really takes to build infrastructure in the UK & Ireland.
+
 ## Session 64
 
 - [Marvellous Adedapo](https://www.linkedin.com/in/marvellous-adedapo/) and [Emmanuel James](https://www.linkedin.com/in/emmanuel-james-7a1853248/) demoed [RetailGuard](https://myretailguard.com/), an intelligence layer of a POS system. While taking you through their journey on how they got there.
