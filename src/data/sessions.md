@@ -9,6 +9,12 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 69
+
+- [Nick Kossolapov](https://www.linkedin.com/in/nickkossolapov/) demoed [Fame Boy](https://nickkossolapov.github.io/fame-boy/), a Game Boy emulator written in F#.
+- [Shubham Patil](https://www.linkedin.com/in/shubhamnileshpatil/) demoed his [ID generator](https://id.patilshubham.me), which lets people create ID card mockups inspired by pop culture, and how it took off on Instagram.
+- [Chinaza Uzoukwu](https://www.linkedin.com/in/chinaza-uzoukwu-a33219228/) demoed a [collection of computer graphics projects](https://mpts.ie/) and some attempts at promotion.
+
 ## Session 68 - Dublin AI Week
 
 - [Saif Rehman](https://www.linkedin.com/in/saif-ur-rehman/) demoed [AgentFM](https://agentfm.net/), an open-source project that turns machines you already own into a cluster for containerised AI agents.
