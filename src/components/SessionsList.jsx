@@ -1,5 +1,6 @@
 // src/components/SessionsList.jsx
 import React, { useMemo, useRef, useState, useEffect } from 'react';
+import { flushSync } from 'react-dom';
 
 // Escapes the reader's own search terms before they go into a RegExp, so typing
 // "C++" or "(preview)" searches for those characters instead of blowing up.
@@ -65,12 +66,36 @@ const SessionsList = ({ sessions = [] }) => {
     });
   }, [sessions, terms, searching]);
 
-  const visibleSessions = searching ? matchingSessions : sessions.slice(0, displayCount);
+  // Sessions past "Load more" are still rendered, just hidden, so the browser's
+  // own find (Ctrl+F) can reach them. The server can't hide them (see
+  // hideUntilFound), so they only join once we're in the browser.
+  const [inBrowser, setInBrowser] = useState(false);
+  useEffect(() => setInBrowser(true), []);
+  const visibleSessions = searching
+    ? matchingSessions
+    : sessions.slice(0, inBrowser ? sessions.length : displayCount);
   const hasMore = !searching && displayCount < sessions.length;
   const remainingCount = sessions.length - displayCount;
 
   const loadMore = () => {
     setDisplayCount(prev => Math.min(prev + LOAD_MORE_COUNT, sessions.length));
+  };
+
+  // hidden="until-found" hides a session but lets find-in-page match inside it.
+  // On a match the browser fires beforematch and unhides it; we then load every
+  // session up to that one so "Load more" carries on from there. That has to
+  // render before the browser scrolls to the match (hence flushSync), or the
+  // sessions appearing above push it off screen. React 19.1 can't render this
+  // hidden value or listen for beforematch, hence the ref.
+  const hideUntilFound = (index) => (el) => {
+    if (!el) return;
+    el.setAttribute('hidden', 'until-found');
+    const reveal = () => flushSync(() => setDisplayCount(prev => Math.max(prev, index + 1)));
+    el.addEventListener('beforematch', reveal);
+    return () => {
+      el.removeEventListener('beforematch', reveal);
+      el.removeAttribute('hidden');
+    };
   };
 
   // --- Build-time image discovery (Vite) -------------------------------------
@@ -124,6 +149,14 @@ const SessionsList = ({ sessions = [] }) => {
           margin: var(--line-height) 0;
         }
         .session-content ul li { margin-bottom: 0.5em; }
+
+        /* Sessions past "Load more": hidden="until-found" hides the content but
+           keeps the box, so drop its border and spacing too */
+        details.session-item[hidden] {
+          border: none;
+          padding: 0;
+          margin: 0;
+        }
 
         /* Load-more row behaves like a header, without the marker */
         details.session-item.load-more summary {
@@ -288,8 +321,9 @@ const SessionsList = ({ sessions = [] }) => {
         <p className="session-search__empty">No demos match “{query}”.</p>
       )}
 
-      {visibleSessions.map((session) => {
+      {visibleSessions.map((session, index) => {
         const imgs = imagesBySession[session.number] || [];
+        const pastLoadMore = !searching && index >= displayCount;
         return (
           // Keying on the query remounts on every keystroke, which resets the
           // HTML the highlighter mutated and keeps `open` in step with the mode.
@@ -297,6 +331,7 @@ const SessionsList = ({ sessions = [] }) => {
             key={`${session.number}${searching ? `-${query}` : ''}`}
             className="session-item"
             open={searching || undefined}
+            ref={pastLoadMore ? hideUntilFound(index) : undefined}
           >
             <summary>
               Session {session.number}
@@ -305,7 +340,8 @@ const SessionsList = ({ sessions = [] }) => {
 
             <div className="session-content">
               <SessionBody html={session.html} terms={terms} />
-              {imgs.length > 0 && <ImageStrip images={imgs} />}
+              {/* Find only needs the text, so hidden sessions skip their images */}
+              {imgs.length > 0 && !pastLoadMore && <ImageStrip images={imgs} />}
             </div>
           </details>
         );
