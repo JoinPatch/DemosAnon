@@ -340,7 +340,8 @@ const SessionsList = ({ sessions = [] }) => {
 
             <div className="session-content">
               <SessionBody html={session.html} terms={terms} />
-              {imgs.length > 0 && <ImageStrip images={imgs} />}
+              {/* Find only needs the text, so hidden sessions skip their images */}
+              {imgs.length > 0 && !pastLoadMore && <ImageStrip images={imgs} />}
             </div>
           </details>
         );
