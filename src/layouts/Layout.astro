@@ -380,6 +380,17 @@ const { title } = Astro.props;
     -webkit-appearance: none;
   }
 
+  /* Thin square focus ring just inside the border that fades in and out, instead of the browser's rounded default */
+  input, button, textarea {
+    outline: 1px solid transparent;
+    outline-offset: calc(var(--border-thickness) * -2);
+    transition: outline-color 0.2s ease;
+  }
+
+  input:focus-visible, button:focus-visible, textarea:focus-visible {
+    outline-color: var(--text-color);
+  }
+
   button {
     text-transform: uppercase;
     font-weight: var(--font-weight-medium);
