@@ -11,7 +11,7 @@ const CENTER_ASCII = true; // Set to true to center the DEMOS text
 const HORIZONTAL_PADDING = 2; // Characters of padding on each side (when applicable)
 
 // ASCII art for "Demos" - will be used as fixed background
-const DEMOS_ASCII = [
+export const DEMOS_ASCII = [
 	'MM"""Yb.                                             ',
 	"MM    `Yb.                                           ",
 	'MM     `Mb  .gP"Ya   MMpMMMb.pMMMb.  ,pW"Wq.  ,pP"Yb.',
@@ -22,8 +22,8 @@ const DEMOS_ASCII = [
 ];
 
 // Grid configuration
-const GRID_WIDTH = 80; // cols
-const GRID_HEIGHT = 10; // rows
+export const GRID_WIDTH = 80; // cols
+export const GRID_HEIGHT = 10; // rows
 const TICK_RATE = 200; // ms
 const TYPE1_SPAWN_CHANCE = 0.04;
 const MAX_TYPE1_CHARS = 20;
@@ -38,7 +38,7 @@ const TYPE2_CHAR = "@";
 const EMPTY_CHAR = " ";
 
 // 🎨 Colors
-const GHOST_COLORS = ["#778BEB", "#FFB347", "#9370DB", "#000000"];
+export const GHOST_COLORS = ["#778BEB", "#FFB347", "#9370DB", "#000000"];
 const CHASER_COLOR = "#FF5E5B";
 const CHASER_FONT_WEIGHT = "bold";
 

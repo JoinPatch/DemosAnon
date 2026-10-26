@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ASCIIHeader from '../components/ASCIIHeader.jsx';
+import SeasonalHeader from '../components/SeasonalHeader.jsx';
 import SessionsList from '../components/SessionsList.jsx';
 import { parseSessionsMarkdown } from '../utils/sessions-parser.js';
 
@@ -24,7 +24,7 @@ console.log(sessions);
 ---
 
 <Layout title="DEMOS ANON">
-  <ASCIIHeader client:load />
+  <SeasonalHeader client:load />
     
   <hr />  
   
