@@ -82,6 +82,12 @@ const styles = {
 		fontVariantNumeric: "tabular-nums lining-nums",
 	},
 	row: { margin: 0, padding: 0, height: "var(--line-height)" },
+	// JetBrains Mono would otherwise join pairs like "|-" into arrows.
+	ghost: {
+		color: GHOST_COLOR,
+		fontVariantLigatures: "none",
+		fontFeatureSettings: '"liga" 0, "calt" 0',
+	},
 };
 
 const newSim = () => ({
@@ -322,7 +328,7 @@ const renderRows = (s) => {
 				if (buf) els.push(buf);
 				buf = "";
 				els.push(
-					<span key={x} style={{ color: cell.color }}>
+					<span key={x} style={cell.color === GHOST_COLOR ? styles.ghost : { color: cell.color }}>
 						{cell.ch}
 					</span>
 				);
