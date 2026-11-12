@@ -1,7 +1,6 @@
-// Christmas bits for the DEMOS header: a Diffmas tree beside the letters, and
-// light snow. Flakes drift down through the empty cells, settle on top of the
-// letters and the tree (or the bottom of the grid) for a few seconds, then melt
-// away.
+// Christmas bits for the DEMOS header: light snow and snowy ground. Flakes
+// drift down through the empty cells, settle on top of the letters or the
+// ground for a few seconds, then melt away.
 
 export const SNOW_COLOR = "var(--text-color-alt)";
 
@@ -59,22 +58,24 @@ export const stillSnow = ({ cols, rows, isArt }) => {
 	return flakes;
 };
 
-// The Diffmas tree: green + for the branches, red - for the baubles, like a
-// diff, with a gold star on top.
-const TREE = [
-	"    *",
-	"   +++",
-	"  ++-++",
-	" +-+++++",
-	"++++-++-+",
-	"    |",
-];
-export const TREE_WIDTH = Math.max(...TREE.map((r) => r.length));
-export const TREE_HEIGHT = TREE.length;
-const TREE_COLORS = { "*": "#FFB347", "+": "#3FB950", "-": "#FF5E5B" };
+// Snowy ground along the bottom: a row of rounded m and n bumps in white and
+// grey, with a few soft drifts rising into the row above. It's made once
+// per header, so it stays put.
+const GROUND_CHARS = "mmmmnn";
+const DRIFT_CHARS = "_.-";
+const SNOW_WHITE = "var(--text-color)";
+const pickChar = (chars) => chars[Math.floor(Math.random() * chars.length)];
+const tone = () => (Math.random() < 0.3 ? SNOW_WHITE : SNOW_COLOR);
 
-// The tree's cells with its top-left corner at (x0, y0).
-export const treeCells = (x0, y0) =>
-	TREE.flatMap((row, dy) =>
-		[...row].flatMap((ch, dx) => (ch === " " ? [] : [{ x: x0 + dx, y: y0 + dy, ch, color: TREE_COLORS[ch] }]))
-	);
+export const makeGround = (cols, rows) => {
+	const cells = [];
+	for (let x = 0; x < cols; x++) cells.push({ x, y: rows - 1, ch: pickChar(GROUND_CHARS), color: tone() });
+	for (let x = 0; x < cols; x++) {
+		if (Math.random() > 0.05) continue;
+		const w = 3 + Math.floor(Math.random() * 4);
+		for (let dx = 0; dx < w && x + dx < cols; dx++)
+			cells.push({ x: x + dx, y: rows - 2, ch: dx === 0 || dx === w - 1 ? "." : pickChar(DRIFT_CHARS), color: SNOW_COLOR });
+		x += w + 4;
+	}
+	return cells;
+};

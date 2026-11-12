@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SNOW_COLOR, stepSnow, stillSnow, TREE_WIDTH, TREE_HEIGHT, treeCells } from "./christmas.js";
+import { SNOW_COLOR, stepSnow, stillSnow, makeGround } from "./christmas.js";
 
 console.log("made by tim: https://timfarrelly.com");
 console.log("code: https://github.com/timf34/DemosAnon");
@@ -85,8 +85,8 @@ const styles = {
 	content: { position: "relative", zIndex: 2, margin: 0 },
 };
 
-// Pass `christmas` for the Christmas version: a Diffmas tree beside the letters
-// when there's room, and light snow falling behind everything.
+// Pass `christmas` for the Christmas version: snowy ground along the bottom,
+// and light snow falling behind everything.
 const GridAnimation = ({ christmas = false }) => {
 	const gridRef = useRef(null);
 
@@ -95,7 +95,6 @@ const GridAnimation = ({ christmas = false }) => {
 		Math.max(...DEMOS_ASCII.map((l) => l.trimEnd().length))
 	); // ≈ 50
 	const [startX, setStartX] = useState(0);
-	const [visibleCols, setVisibleCols] = useState(GRID_WIDTH);
 
 	const measureCharWidthPx = (containerEl) => {
 		// Create a hidden ruler element sized to 1ch within the same font context
@@ -141,17 +140,12 @@ const GridAnimation = ({ christmas = false }) => {
 		return x;
 	};
 
-	// The Diffmas tree sits in the gap right of the art, bottom-aligned with it,
-	// with at least a column clear either side. No tree if it doesn't fit.
-	const treeFor = (xStart, cols) => {
+	const ground = useRef(null);
+	const groundCells = () => {
 		if (!christmas) return [];
-		const gapX = xStart + asciiWidth.current;
-		const room = Math.min(cols, GRID_WIDTH) - gapX;
-		if (room < TREE_WIDTH + 2) return [];
-		const artBottom = Math.floor((GRID_HEIGHT - DEMOS_ASCII.length) / 2) + DEMOS_ASCII.length;
-		return treeCells(gapX + Math.floor((room - TREE_WIDTH) / 2), artBottom - TREE_HEIGHT);
+		if (!ground.current) ground.current = makeGround(GRID_WIDTH, GRID_HEIGHT);
+		return ground.current;
 	};
-	const tree = useRef([]);
 
 	// Build background grid for a given startX
 	const createBackgroundGrid = (xStart) => {
@@ -171,17 +165,18 @@ const GridAnimation = ({ christmas = false }) => {
 				}
 			}
 		});
-		tree.current.forEach((c) => (grid[c.y][c.x] = c.ch));
+		groundCells().forEach((c) => (grid[c.y][c.x] = c.ch));
 		return grid;
 	};
 
-	// Find all letter positions
+	// Find all letter positions (in DEMOS itself, not the ground)
 	const findLetterPositions = (grid) => {
 		const arr = [];
 		const re = /[a-zA-Z]/;
+		const isGround = new Set(groundCells().map((c) => `${c.y}-${c.x}`));
 		grid.forEach((row, y) => {
 			row.forEach((ch, x) => {
-				if (re.test(ch)) arr.push({ x, y, char: ch });
+				if (re.test(ch) && !isGround.has(`${y}-${x}`)) arr.push({ x, y, char: ch });
 			});
 		});
 		return arr;
@@ -193,9 +188,8 @@ const GridAnimation = ({ christmas = false }) => {
 	);
 	const letterPositions = useRef(findLetterPositions(backgroundGrid));
 	useEffect(() => {
-		tree.current = treeFor(startX, visibleCols);
 		setBackgroundGrid(createBackgroundGrid(startX));
-	}, [startX, visibleCols, christmas]);
+	}, [startX, christmas]);
 	useEffect(() => {
 		letterPositions.current = findLetterPositions(backgroundGrid);
 	}, [backgroundGrid]);
@@ -222,10 +216,7 @@ const GridAnimation = ({ christmas = false }) => {
 		const el = gridRef.current;
 		if (!el) return;
 
-		const apply = () => {
-			setStartX(computeStartX(el));
-			setVisibleCols(Math.floor(el.clientWidth / measureCharWidthPx(el)));
-		};
+		const apply = () => setStartX(computeStartX(el));
 		apply();
 
 		const ro = new ResizeObserver(() => apply());
@@ -420,7 +411,7 @@ const GridAnimation = ({ christmas = false }) => {
 	const renderGrid = () => {
 		const displayGrid = backgroundGrid.map((row) => [...row]);
 		const colored = new Map();
-		tree.current.forEach((c) => colored.set(`${c.y}-${c.x}`, { char: c.ch, color: c.color, noLigatures: true }));
+		groundCells().forEach((c) => colored.set(`${c.y}-${c.x}`, { char: c.ch, color: c.color, noLigatures: true }));
 
 		type1Chars.forEach((char) => {
 			if (
