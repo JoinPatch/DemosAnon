@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { SNOW_COLOR, stepSnow, stillSnow } from "./snow.js";
 
 console.log("made by tim: https://timfarrelly.com");
 console.log("code: https://github.com/timf34/DemosAnon");
@@ -78,7 +79,8 @@ const styles = {
 	content: { position: "relative", zIndex: 2, margin: 0 },
 };
 
-const GridAnimation = () => {
+// Pass `snow` for the Christmas version: light snow falls behind the letters.
+const GridAnimation = ({ snow = false }) => {
 	const gridRef = useRef(null);
 
 	// --- Helpers ---------------------------------------------------------------
@@ -175,6 +177,23 @@ const GridAnimation = () => {
 	useEffect(() => {
 		letterPositions.current = findLetterPositions(backgroundGrid);
 	}, [backgroundGrid]);
+
+	// --- Snow -----------------------------------------------------------------
+	const flakes = useRef([]);
+	const snowArea = () => ({
+		cols: GRID_WIDTH,
+		rows: GRID_HEIGHT,
+		isArt: (x, y) => backgroundGrid[y][x] !== EMPTY_CHAR,
+	});
+	const stillSnowOnly = useRef(false);
+	useEffect(() => {
+		if (!snow) {
+			flakes.current = [];
+			return;
+		}
+		stillSnowOnly.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		if (stillSnowOnly.current) flakes.current = stillSnow(snowArea());
+	}, [snow, backgroundGrid]);
 
 	// --- Measure & react to resize --------------------------------------------
 	useEffect(() => {
@@ -368,6 +387,9 @@ const GridAnimation = () => {
 			? INITIAL_SPAWN_CHANCE
 			: TYPE1_SPAWN_CHANCE;
 		if (type1Chars.length === 0 || Math.random() < spawnChance) spawnType1();
+
+		if (snow && !stillSnowOnly.current)
+			flakes.current = stepSnow(flakes.current, snowArea(), now);
 	};
 
 	const renderGrid = () => {
@@ -403,6 +425,13 @@ const GridAnimation = () => {
 				fontWeight: CHASER_FONT_WEIGHT,
 			});
 		}
+
+		// Snow only shows in empty cells, so it falls behind everything else.
+		flakes.current.forEach((f) => {
+			if (displayGrid[f.y]?.[f.x] !== EMPTY_CHAR) return;
+			displayGrid[f.y][f.x] = f.ch;
+			colored.set(`${f.y}-${f.x}`, { char: f.ch, color: SNOW_COLOR });
+		});
 
 		return displayGrid.map((row, y) => {
 			const rowEls = [];
@@ -445,7 +474,7 @@ const GridAnimation = () => {
 	useEffect(() => {
 		tickRef.current = setInterval(updateCharacters, 50);
 		return () => clearInterval(tickRef.current);
-	}, [type1Chars, type2Char, isInitialSpawnPeriod, backgroundGrid]);
+	}, [type1Chars, type2Char, isInitialSpawnPeriod, backgroundGrid, snow]);
 
 	return (
 		<div
