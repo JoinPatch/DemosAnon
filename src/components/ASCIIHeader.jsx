@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { SNOW_COLOR, stepSnow, stillSnow, SCENE_ROWS, sceneCells } from "./christmas.js";
 
 console.log("made by tim: https://timfarrelly.com");
 console.log("code: https://github.com/timf34/DemosAnon");
@@ -42,6 +43,12 @@ export const GHOST_COLORS = ["#778BEB", "#FFB347", "#9370DB", "#000000"];
 const CHASER_COLOR = "#FF5E5B";
 const CHASER_FONT_WEIGHT = "bold";
 
+// JetBrains Mono would otherwise join pairs like "++" or ".." into ligatures.
+const NO_LIGATURES = {
+	fontVariantLigatures: "none",
+	fontFeatureSettings: '"liga" 0, "calt" 0',
+};
+
 // CSS styles
 const styles = {
 	container: {
@@ -78,7 +85,9 @@ const styles = {
 	content: { position: "relative", zIndex: 2, margin: 0 },
 };
 
-const GridAnimation = () => {
+// Pass `christmas` for the Christmas version: a few extra rows for a snowy
+// landscape below the letters, and light snow falling behind everything.
+const GridAnimation = ({ christmas = false }) => {
 	const gridRef = useRef(null);
 
 	// --- Helpers ---------------------------------------------------------------
@@ -131,9 +140,12 @@ const GridAnimation = () => {
 		return x;
 	};
 
+	const scene = useRef([]);
+
 	// Build background grid for a given startX
 	const createBackgroundGrid = (xStart) => {
-		const grid = Array(GRID_HEIGHT)
+		const height = christmas ? GRID_HEIGHT + SCENE_ROWS - 2 : GRID_HEIGHT;
+		const grid = Array(height)
 			.fill(null)
 			.map(() => Array(GRID_WIDTH).fill(EMPTY_CHAR));
 		const startY = Math.floor((GRID_HEIGHT - DEMOS_ASCII.length) / 2);
@@ -141,7 +153,7 @@ const GridAnimation = () => {
 		DEMOS_ASCII.forEach((line, y) => {
 			const trimmedLine = line.trimEnd();
 			const gridY = startY + y;
-			if (gridY < 0 || gridY >= GRID_HEIGHT) return;
+			if (gridY < 0 || gridY >= height) return;
 			for (let x = 0; x < trimmedLine.length; x++) {
 				const gridX = xStart + x;
 				if (gridX >= 0 && gridX < GRID_WIDTH) {
@@ -149,6 +161,8 @@ const GridAnimation = () => {
 				}
 			}
 		});
+		scene.current = christmas ? sceneCells(xStart, startY + DEMOS_ASCII.length, GRID_WIDTH) : [];
+		scene.current.forEach((c) => (grid[c.y][c.x] = c.ch));
 		return grid;
 	};
 
@@ -168,13 +182,31 @@ const GridAnimation = () => {
 	const [backgroundGrid, setBackgroundGrid] = useState(() =>
 		createBackgroundGrid(0)
 	);
+	const rows = backgroundGrid.length;
 	const letterPositions = useRef(findLetterPositions(backgroundGrid));
 	useEffect(() => {
 		setBackgroundGrid(createBackgroundGrid(startX));
-	}, [startX]);
+	}, [startX, christmas]);
 	useEffect(() => {
 		letterPositions.current = findLetterPositions(backgroundGrid);
 	}, [backgroundGrid]);
+
+	// --- Snow -----------------------------------------------------------------
+	const flakes = useRef([]);
+	const snowArea = () => ({
+		cols: GRID_WIDTH,
+		rows,
+		isArt: (x, y) => backgroundGrid[y][x] !== EMPTY_CHAR,
+	});
+	const stillSnowOnly = useRef(false);
+	useEffect(() => {
+		if (!christmas) {
+			flakes.current = [];
+			return;
+		}
+		stillSnowOnly.current = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		if (stillSnowOnly.current) flakes.current = stillSnow(snowArea());
+	}, [christmas, backgroundGrid]);
 
 	// --- Measure & react to resize --------------------------------------------
 	useEffect(() => {
@@ -199,7 +231,7 @@ const GridAnimation = () => {
 
 	useEffect(() => {
 		const initialX = Math.floor(Math.random() * GRID_WIDTH);
-		const initialY = Math.floor(Math.random() * GRID_HEIGHT);
+		const initialY = Math.floor(Math.random() * rows);
 		setType2Char({
 			x: initialX,
 			y: initialY,
@@ -294,9 +326,9 @@ const GridAnimation = () => {
 					[newVx, newVy] = getPerpendicularDirection(newVx, newVy);
 					movesSince = 0;
 				}
-				if (newY < 0 || newY >= GRID_HEIGHT) {
+				if (newY < 0 || newY >= rows) {
 					newVy = -newVy;
-					newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY));
+					newY = Math.max(0, Math.min(rows - 1, newY));
 					[newVx, newVy] = getPerpendicularDirection(newVx, newVy);
 					movesSince = 0;
 				}
@@ -349,7 +381,7 @@ const GridAnimation = () => {
 			}
 
 			newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX + newVx));
-			newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY + newVy));
+			newY = Math.max(0, Math.min(rows - 1, newY + newVy));
 			return { ...prev, x: newX, y: newY, vx: newVx, vy: newVy, lastMove: now };
 		});
 
@@ -368,16 +400,20 @@ const GridAnimation = () => {
 			? INITIAL_SPAWN_CHANCE
 			: TYPE1_SPAWN_CHANCE;
 		if (type1Chars.length === 0 || Math.random() < spawnChance) spawnType1();
+
+		if (christmas && !stillSnowOnly.current)
+			flakes.current = stepSnow(flakes.current, snowArea(), now);
 	};
 
 	const renderGrid = () => {
 		const displayGrid = backgroundGrid.map((row) => [...row]);
 		const colored = new Map();
+		scene.current.forEach((c) => colored.set(`${c.y}-${c.x}`, { char: c.ch, color: c.color, noLigatures: true }));
 
 		type1Chars.forEach((char) => {
 			if (
 				char.y >= 0 &&
-				char.y < GRID_HEIGHT &&
+				char.y < rows &&
 				char.x >= 0 &&
 				char.x < GRID_WIDTH
 			) {
@@ -392,7 +428,7 @@ const GridAnimation = () => {
 		if (
 			type2Char &&
 			type2Char.y >= 0 &&
-			type2Char.y < GRID_HEIGHT &&
+			type2Char.y < rows &&
 			type2Char.x >= 0 &&
 			type2Char.x < GRID_WIDTH
 		) {
@@ -403,6 +439,13 @@ const GridAnimation = () => {
 				fontWeight: CHASER_FONT_WEIGHT,
 			});
 		}
+
+		// Snow only shows in empty cells, so it falls behind everything else.
+		flakes.current.forEach((f) => {
+			if (displayGrid[f.y]?.[f.x] !== EMPTY_CHAR) return;
+			displayGrid[f.y][f.x] = f.ch;
+			colored.set(`${f.y}-${f.x}`, { char: f.ch, color: SNOW_COLOR, noLigatures: true });
+		});
 
 		return displayGrid.map((row, y) => {
 			const rowEls = [];
@@ -421,6 +464,7 @@ const GridAnimation = () => {
 							style={{
 								color: meta.color,
 								fontWeight: meta.fontWeight || "normal",
+								...(meta.noLigatures && NO_LIGATURES),
 							}}
 						>
 							{meta.char}
@@ -445,14 +489,17 @@ const GridAnimation = () => {
 	useEffect(() => {
 		tickRef.current = setInterval(updateCharacters, 50);
 		return () => clearInterval(tickRef.current);
-	}, [type1Chars, type2Char, isInitialSpawnPeriod, backgroundGrid]);
+	}, [type1Chars, type2Char, isInitialSpawnPeriod, backgroundGrid, christmas]);
 
 	return (
 		<div
 			className="ascii-banner"
 			style={{ ...styles.container, justifyContent: "center" }}
 		>
-			<div ref={gridRef} style={styles.grid}>
+			<div
+				ref={gridRef}
+				style={{ ...styles.grid, height: `calc(${rows} * var(--line-height, 1.20rem))` }}
+			>
 				{SHOW_GRID && <div style={styles.debugOverlay} />}
 				<div style={styles.content}>{renderGrid()}</div>
 			</div>
