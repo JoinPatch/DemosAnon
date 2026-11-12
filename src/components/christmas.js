@@ -1,6 +1,6 @@
-// Christmas bits for the DEMOS header: light snow and snowy ground. Flakes
-// drift down through the empty cells, settle on top of the letters or the
-// ground for a few seconds, then melt away.
+// Christmas bits for the DEMOS header: a snowy landscape below the letters,
+// and light snow. Flakes drift down through the empty cells, settle on top of
+// the letters, hills and trees for a few seconds, then melt away.
 
 export const SNOW_COLOR = "var(--text-color-alt)";
 
@@ -58,24 +58,37 @@ export const stillSnow = ({ cols, rows, isArt }) => {
 	return flakes;
 };
 
-// Snowy ground along the bottom: a row of rounded m and n bumps in white and
-// grey, with a few soft drifts rising into the row above. It's made once
-// per header, so it stays put.
-const GROUND_CHARS = "mmmmnn";
-const DRIFT_CHARS = "_.-";
+// A snowy landscape under DEMOS: near pines and a snowbank in white, far
+// hills with small pines in grey. The rows start just below the art, and the
+// columns line up with the art's left edge at SCENE_ART_X.
+const SCENE_ART_X = 13;
+const SCENE_NEAR = [
+	"    /\\                                                                    /\\",
+	"   /  \\                                                                  /  \\",
+	"  /    \\                                                                /    \\",
+	"''--||--..__                                                        __..--||--''",
+	"            ''---...________________________________________...---''",
+];
+const SCENE_FAR = [
+	"",
+	"               /\\    _.--''''--._               _.-''-._     /\\",
+	"         _..-'/  \\-''            ''--..___..--''        ''-./  \\'-.._",
+];
+export const SCENE_ROWS = SCENE_NEAR.length;
 const SNOW_WHITE = "var(--text-color)";
-const pickChar = (chars) => chars[Math.floor(Math.random() * chars.length)];
-const tone = () => (Math.random() < 0.3 ? SNOW_WHITE : SNOW_COLOR);
 
-export const makeGround = (cols, rows) => {
-	const cells = [];
-	for (let x = 0; x < cols; x++) cells.push({ x, y: rows - 1, ch: pickChar(GROUND_CHARS), color: tone() });
-	for (let x = 0; x < cols; x++) {
-		if (Math.random() > 0.05) continue;
-		const w = 3 + Math.floor(Math.random() * 4);
-		for (let dx = 0; dx < w && x + dx < cols; dx++)
-			cells.push({ x: x + dx, y: rows - 2, ch: dx === 0 || dx === w - 1 ? "." : pickChar(DRIFT_CHARS), color: SNOW_COLOR });
-		x += w + 4;
-	}
-	return cells;
+// The scene's cells for art whose left edge is at artX and whose last row is
+// just above artBottom, clipped to a grid `cols` wide. Near cells win.
+export const sceneCells = (artX, artBottom, cols) => {
+	const cells = new Map();
+	const add = (rows, color) =>
+		rows.forEach((row, dy) =>
+			[...row].forEach((ch, i) => {
+				const x = artX - SCENE_ART_X + i;
+				if (ch !== " " && x >= 0 && x < cols) cells.set(`${dy}-${x}`, { x, y: artBottom + dy, ch, color });
+			})
+		);
+	add(SCENE_FAR, SNOW_COLOR);
+	add(SCENE_NEAR, SNOW_WHITE);
+	return [...cells.values()];
 };

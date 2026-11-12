@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { SNOW_COLOR, stepSnow, stillSnow, makeGround } from "./christmas.js";
+import { SNOW_COLOR, stepSnow, stillSnow, SCENE_ROWS, sceneCells } from "./christmas.js";
 
 console.log("made by tim: https://timfarrelly.com");
 console.log("code: https://github.com/timf34/DemosAnon");
@@ -85,8 +85,8 @@ const styles = {
 	content: { position: "relative", zIndex: 2, margin: 0 },
 };
 
-// Pass `christmas` for the Christmas version: snowy ground along the bottom,
-// and light snow falling behind everything.
+// Pass `christmas` for the Christmas version: a few extra rows for a snowy
+// landscape below the letters, and light snow falling behind everything.
 const GridAnimation = ({ christmas = false }) => {
 	const gridRef = useRef(null);
 
@@ -140,16 +140,12 @@ const GridAnimation = ({ christmas = false }) => {
 		return x;
 	};
 
-	const ground = useRef(null);
-	const groundCells = () => {
-		if (!christmas) return [];
-		if (!ground.current) ground.current = makeGround(GRID_WIDTH, GRID_HEIGHT);
-		return ground.current;
-	};
+	const scene = useRef([]);
 
 	// Build background grid for a given startX
 	const createBackgroundGrid = (xStart) => {
-		const grid = Array(GRID_HEIGHT)
+		const height = christmas ? GRID_HEIGHT + SCENE_ROWS - 2 : GRID_HEIGHT;
+		const grid = Array(height)
 			.fill(null)
 			.map(() => Array(GRID_WIDTH).fill(EMPTY_CHAR));
 		const startY = Math.floor((GRID_HEIGHT - DEMOS_ASCII.length) / 2);
@@ -157,7 +153,7 @@ const GridAnimation = ({ christmas = false }) => {
 		DEMOS_ASCII.forEach((line, y) => {
 			const trimmedLine = line.trimEnd();
 			const gridY = startY + y;
-			if (gridY < 0 || gridY >= GRID_HEIGHT) return;
+			if (gridY < 0 || gridY >= height) return;
 			for (let x = 0; x < trimmedLine.length; x++) {
 				const gridX = xStart + x;
 				if (gridX >= 0 && gridX < GRID_WIDTH) {
@@ -165,18 +161,18 @@ const GridAnimation = ({ christmas = false }) => {
 				}
 			}
 		});
-		groundCells().forEach((c) => (grid[c.y][c.x] = c.ch));
+		scene.current = christmas ? sceneCells(xStart, startY + DEMOS_ASCII.length, GRID_WIDTH) : [];
+		scene.current.forEach((c) => (grid[c.y][c.x] = c.ch));
 		return grid;
 	};
 
-	// Find all letter positions (in DEMOS itself, not the ground)
+	// Find all letter positions
 	const findLetterPositions = (grid) => {
 		const arr = [];
 		const re = /[a-zA-Z]/;
-		const isGround = new Set(groundCells().map((c) => `${c.y}-${c.x}`));
 		grid.forEach((row, y) => {
 			row.forEach((ch, x) => {
-				if (re.test(ch) && !isGround.has(`${y}-${x}`)) arr.push({ x, y, char: ch });
+				if (re.test(ch)) arr.push({ x, y, char: ch });
 			});
 		});
 		return arr;
@@ -186,6 +182,7 @@ const GridAnimation = ({ christmas = false }) => {
 	const [backgroundGrid, setBackgroundGrid] = useState(() =>
 		createBackgroundGrid(0)
 	);
+	const rows = backgroundGrid.length;
 	const letterPositions = useRef(findLetterPositions(backgroundGrid));
 	useEffect(() => {
 		setBackgroundGrid(createBackgroundGrid(startX));
@@ -198,7 +195,7 @@ const GridAnimation = ({ christmas = false }) => {
 	const flakes = useRef([]);
 	const snowArea = () => ({
 		cols: GRID_WIDTH,
-		rows: GRID_HEIGHT,
+		rows,
 		isArt: (x, y) => backgroundGrid[y][x] !== EMPTY_CHAR,
 	});
 	const stillSnowOnly = useRef(false);
@@ -234,7 +231,7 @@ const GridAnimation = ({ christmas = false }) => {
 
 	useEffect(() => {
 		const initialX = Math.floor(Math.random() * GRID_WIDTH);
-		const initialY = Math.floor(Math.random() * GRID_HEIGHT);
+		const initialY = Math.floor(Math.random() * rows);
 		setType2Char({
 			x: initialX,
 			y: initialY,
@@ -329,9 +326,9 @@ const GridAnimation = ({ christmas = false }) => {
 					[newVx, newVy] = getPerpendicularDirection(newVx, newVy);
 					movesSince = 0;
 				}
-				if (newY < 0 || newY >= GRID_HEIGHT) {
+				if (newY < 0 || newY >= rows) {
 					newVy = -newVy;
-					newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY));
+					newY = Math.max(0, Math.min(rows - 1, newY));
 					[newVx, newVy] = getPerpendicularDirection(newVx, newVy);
 					movesSince = 0;
 				}
@@ -384,7 +381,7 @@ const GridAnimation = ({ christmas = false }) => {
 			}
 
 			newX = Math.max(0, Math.min(GRID_WIDTH - 1, newX + newVx));
-			newY = Math.max(0, Math.min(GRID_HEIGHT - 1, newY + newVy));
+			newY = Math.max(0, Math.min(rows - 1, newY + newVy));
 			return { ...prev, x: newX, y: newY, vx: newVx, vy: newVy, lastMove: now };
 		});
 
@@ -411,12 +408,12 @@ const GridAnimation = ({ christmas = false }) => {
 	const renderGrid = () => {
 		const displayGrid = backgroundGrid.map((row) => [...row]);
 		const colored = new Map();
-		groundCells().forEach((c) => colored.set(`${c.y}-${c.x}`, { char: c.ch, color: c.color, noLigatures: true }));
+		scene.current.forEach((c) => colored.set(`${c.y}-${c.x}`, { char: c.ch, color: c.color, noLigatures: true }));
 
 		type1Chars.forEach((char) => {
 			if (
 				char.y >= 0 &&
-				char.y < GRID_HEIGHT &&
+				char.y < rows &&
 				char.x >= 0 &&
 				char.x < GRID_WIDTH
 			) {
@@ -431,7 +428,7 @@ const GridAnimation = ({ christmas = false }) => {
 		if (
 			type2Char &&
 			type2Char.y >= 0 &&
-			type2Char.y < GRID_HEIGHT &&
+			type2Char.y < rows &&
 			type2Char.x >= 0 &&
 			type2Char.x < GRID_WIDTH
 		) {
@@ -499,7 +496,10 @@ const GridAnimation = ({ christmas = false }) => {
 			className="ascii-banner"
 			style={{ ...styles.container, justifyContent: "center" }}
 		>
-			<div ref={gridRef} style={styles.grid}>
+			<div
+				ref={gridRef}
+				style={{ ...styles.grid, height: `calc(${rows} * var(--line-height, 1.20rem))` }}
+			>
 				{SHOW_GRID && <div style={styles.debugOverlay} />}
 				<div style={styles.content}>{renderGrid()}</div>
 			</div>
