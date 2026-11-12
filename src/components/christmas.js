@@ -1,6 +1,7 @@
-// Light snow for the DEMOS header at Christmas. Flakes drift down through the
-// empty cells, settle on top of the DEMOS letters (or the bottom of the grid)
-// for a few seconds, then melt away.
+// Christmas bits for the DEMOS header: a Diffmas tree beside the letters, and
+// light snow. Flakes drift down through the empty cells, settle on top of the
+// letters and the tree (or the bottom of the grid) for a few seconds, then melt
+// away.
 
 export const SNOW_COLOR = "var(--text-color-alt)";
 
@@ -57,3 +58,23 @@ export const stillSnow = ({ cols, rows, isArt }) => {
 			}
 	return flakes;
 };
+
+// The Diffmas tree: green + for the branches, red - for the baubles, like a
+// diff, with a gold star on top.
+const TREE = [
+	"    *",
+	"   +++",
+	"  ++-++",
+	" +-+++++",
+	"++++-++-+",
+	"    |",
+];
+export const TREE_WIDTH = Math.max(...TREE.map((r) => r.length));
+export const TREE_HEIGHT = TREE.length;
+const TREE_COLORS = { "*": "#FFB347", "+": "#3FB950", "-": "#FF5E5B" };
+
+// The tree's cells with its top-left corner at (x0, y0).
+export const treeCells = (x0, y0) =>
+	TREE.flatMap((row, dy) =>
+		[...row].flatMap((ch, dx) => (ch === " " ? [] : [{ x: x0 + dx, y: y0 + dy, ch, color: TREE_COLORS[ch] }]))
+	);
