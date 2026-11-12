@@ -9,6 +9,12 @@ This file contains all Demos Anon sessions. To add a new session:
 
 ---
 
+## Session 70 - Spooky Cybersecurity Week
+
+- [Jakub Janoska](https://www.linkedin.com/in/jakub-janoska-19a7b8313/) demoed a CLI toolkit that lets offensive security researchers automate their workflows with AI, tackling the challenges specific to black-box (no code) testing.
+- [David Nugent](https://www.linkedin.com/in/david-nugent-1a615b178/) demoed his current software stack for balancing privacy with usability on the internet.
+- [Mark O'Halloran](https://www.linkedin.com/in/mark-o-halloran1/) talked about developing agents to assist in cyber investigations: when to use them, and where they fall short.
+
 ## Session 69
 
 - [Nick Kossolapov](https://www.linkedin.com/in/nickkossolapov/) demoed [Fame Boy](https://nickkossolapov.github.io/fame-boy/), a Game Boy emulator written in F#.
